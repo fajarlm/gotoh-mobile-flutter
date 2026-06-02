@@ -1,5 +1,8 @@
 import 'package:fe_mobile/views/Auth/auth_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fe_mobile/services/auth_services.dart';
+import 'package:fe_mobile/views/admin/dashboard_admin.dart';
+import 'package:fe_mobile/views/user/user_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+  with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
@@ -49,13 +52,35 @@ class _SplashScreenState extends State<SplashScreen>
     for (int i = 0; i <= 100; i++) {
       await Future.delayed(const Duration(milliseconds: 25));
 
-      setState(() {
-        progress = i / 100;
-      });
+      if (mounted) {
+        setState(() {
+          progress = i / 100;
+        });
+      }
     }
 
-    // pindah page
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthPage()));
+    if (!mounted) return;
+
+    final loggedIn = await AuthService.isLoggedIn();
+    if (loggedIn) {
+      final role = await AuthService.getRole();
+      if (role == 'admin') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardAdminPage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UserPage()),
+        );
+      }
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthPage()),
+      );
+    }
   }
   
   @override
@@ -105,17 +130,17 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.health_and_safety,
-                          color: Color(0xff0F6A42),
-                          size: 35,
+                        child: Image.asset(
+                          'assets/images/logo_bg.png',
+                          width: 100,
+                          height: 100,
                         ),
                       ),
 
                       const SizedBox(height: 20),
 
                       const Text(
-                        "GOTOH",
+                        "GOTOH", 
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,

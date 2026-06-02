@@ -1,4 +1,3 @@
-import 'package:fe_mobile/views/Auth/auth_page.dart';
 import 'package:fe_mobile/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';

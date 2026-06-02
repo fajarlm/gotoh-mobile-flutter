@@ -1,9 +1,10 @@
+import 'package:fe_mobile/views/user/medical_checkup1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-void main() {
-  runApp(const AuthPage());
-}
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fe_mobile/services/auth_services.dart';
+import 'package:fe_mobile/views/admin/dashboard_admin.dart';
+import 'package:fe_mobile/views/user/user_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -67,69 +68,80 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
     super.dispose();
   }
 
-  void _handleLogin() {
+  void _handleLogin() async {
     if (_loginFormKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
         _loginError = null;
       });
 
-      Future.delayed(const Duration(milliseconds: 800), () {
-        final email = _loginEmailController.text.trim();
-        final password = _loginPasswordController.text;
-        
-        if (UserDatabase.login(email, password)) {
-          if (mounted) {
-            setState(() => _isLoading = false);
-            _showSuccessDialog('Login Berhasil', 'Selamat datang kembali di GOTOH!');
-          }
+      final result = await AuthService.login(
+        _loginEmailController.text.trim(),
+        _loginPasswordController.text,
+      );
+
+      if (!mounted) return;
+
+      if (result['success'] == true) {
+        final prefs = await SharedPreferences.getInstance();
+        final role = prefs.getString('role') ?? 'user';
+
+        setState(() => _isLoading = false);
+
+        if (role == 'admin') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardAdminPage()),
+          );
         } else {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-              _loginError = 'Email atau kata sandi salah';
-            });
-          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MedicalCheckup1()),
+          );
         }
-      });
+      } else {
+        setState(() {
+          _isLoading = false;
+          _loginError = result['message'] ?? 'Email atau kata sandi salah';
+        });
+      }
     }
   }
 
-  void _handleRegister() {
+  void _handleRegister() async {
     if (_registerFormKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
         _registerError = null;
       });
 
-      Future.delayed(const Duration(milliseconds: 800), () {
-        final email = _registerEmailController.text.trim();
-        final password = _registerPasswordController.text;
-        
-        if (UserDatabase.register(email, password)) {
-          if (mounted) {
-            setState(() => _isLoading = false);
-            _showSuccessDialog(
-              'Pendaftaran Berhasil', 
-              'Akun Anda telah berhasil dibuat. Silakan masuk ke akun Anda.',
-              onConfirm: () {
-                _tabController.animateTo(0);
-                _registerNameController.clear();
-                _registerEmailController.clear();
-                _registerPasswordController.clear();
-                _registerConfirmPasswordController.clear();
-              },
-            );
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-              _registerError = 'Email sudah terdaftar';
-            });
-          }
-        }
-      });
+      final result = await AuthService.register(
+        _registerNameController.text.trim(),
+        _registerEmailController.text.trim(),
+        _registerPasswordController.text,
+      );
+
+      if (!mounted) return;
+
+      if (result['success'] == true) {
+        setState(() => _isLoading = false);
+        _showSuccessDialog(
+          'Pendaftaran Berhasil',
+          'Akun Anda telah berhasil dibuat. Silakan masuk ke akun Anda.',
+          onConfirm: () {
+            _tabController.animateTo(0);
+            _registerNameController.clear();
+            _registerEmailController.clear();
+            _registerPasswordController.clear();
+            _registerConfirmPasswordController.clear();
+          },
+        );
+      } else {
+        setState(() {
+          _isLoading = false;
+          _registerError = result['message'] ?? 'Registrasi gagal';
+        });
+      }
     }
   }
 
@@ -722,9 +734,6 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
                       if (!value.contains('@') || !value.contains('.')) {
                         return 'Masukkan email yang valid';
                       }
-                      if (UserDatabase.isEmailExists(value.trim())) {
-                        return 'Email sudah terdaftar';
-                      }
                       return null;
                     },
                     decoration: const InputDecoration(
@@ -926,59 +935,11 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   }
 }
 
-// ==================== DATA MODEL ====================
-
-class UserCredentials {
-  final String email;
-  final String password;
-
-  UserCredentials({required this.email, required this.password});
-}
-
-class RegisterData {
-  final String name;
-  final String email;
-  final String password;
-  final String confirmPassword;
-
-  RegisterData({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.confirmPassword,
-  });
-}
-
+// ==================== CONSTANTS ====================
 
 class AuthConstants {
   static const String appName = 'GOTOH';
   static const String tagline = 'Temukan Ketenangan Dalam Perjalanan Kesehatanmu';
-  static const String illustrationUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCca2GFv5yZvmqxuPS5q0NIYd_lxuuRdliNZDKrUcumSE-R206oRNddneivKqCSw0Ot097B_tkJtRTm8T5yXta7JZKaiR_tZtdb1S3YlgsTAxKmi5ERszFUQYqsMMID_OqlGQqE1LIr1Sm1wc6r8kEiyPARJ6EZdbcXtlnhoE0OPNhPVS2pPkVWJf4OVbrZ4PeU9LJhh_ygW6xji7NNvcH33AgFRDL_0chNcMQcecmsi0lsqxCQaM9n6D80wy3XI-7AvZq0dd1mMAic';
-  
-  static const String termsUrl = '#';
-  static const String privacyUrl = '#';
-  
-  static const String googleClientId = 'YOUR_GOOGLE_CLIENT_ID';
-}
-
-class UserDatabase {
-  static final Map<String, String> _users = {
-    'user@example.com': 'password123',
-  };
-
-  static bool login(String email, String password) {
-    return _users[email] == password;
-  }
-
-  static bool register(String email, String password) {
-    if (_users.containsKey(email)) {
-      return false;
-    }
-    _users[email] = password;
-    return true;
-  }
-
-  static bool isEmailExists(String email) {
-    return _users.containsKey(email);
-  }
+  static const String illustrationUrl =
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCca2GFv5yZvmqxuPS5q0NIYd_lxuuRdliNZDKrUcumSE-R206oRNddneivKqCSw0Ot097B_tkJtRTm8T5yXta7JZKaiR_tZtdb1S3YlgsTAxKmi5ERszFUQYqsMMID_OqlGQqE1LIr1Sm1wc6r8kEiyPARJ6EZdbcXtlnhoE0OPNhPVS2pPkVWJf4OVbrZ4PeU9LJhh_ygW6xji7NNvcH33AgFRDL_0chNcMQcecmsi0lsqxCQaM9n6D80wy3XI-7AvZq0dd1mMAic';
 }
