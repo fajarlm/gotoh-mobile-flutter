@@ -41,22 +41,12 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> with SingleTi
     setState(() {
       _isLoadingDetails = true;
     });
-    // showCommunity returns Map with success and data
-    // Let's call CommunityService.getCommunities and find this one, or showCommunity if implemented.
-    // Wait, getCommunities fetches list, let's just fetch all and find the matching ID to get latest state.
-    final res = await CommunityService.getCommunities();
-    if (res['success'] == true) {
-      final List<CommunityModel> list = res['data'] as List<CommunityModel>;
-      final updated = list.firstWhere(
-        (element) => element.id == _community.id,
-        orElse: () => _community,
-      );
+    final updated = await CommunityService.getCommunity(_community.id);
+    if (mounted) {
       setState(() {
-        _community = updated;
-        _isLoadingDetails = false;
-      });
-    } else {
-      setState(() {
+        if (updated != null) {
+          _community = updated;
+        }
         _isLoadingDetails = false;
       });
     }
@@ -128,16 +118,21 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> with SingleTi
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      _community.coverImageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: const Color(0xFFC9E7CA),
-                          child: const Icon(Icons.group, size: 80, color: Color(0xFF0D631B)),
-                        );
-                      },
-                    ),
+                    _community.coverImageUrl.isNotEmpty
+                        ? Image.network(
+                            _community.coverImageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: const Color(0xFFC9E7CA),
+                                child: const Icon(Icons.group, size: 80, color: Color(0xFF0D631B)),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: const Color(0xFFC9E7CA),
+                            child: const Icon(Icons.group, size: 80, color: Color(0xFF0D631B)),
+                          ),
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(

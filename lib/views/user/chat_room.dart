@@ -149,12 +149,17 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(widget.community.coverImageUrl),
+              backgroundImage: widget.community.coverImageUrl.isNotEmpty
+                  ? NetworkImage(widget.community.coverImageUrl)
+                  : null,
               backgroundColor: const Color(0xFFC9E7CA),
               radius: 18,
-              onBackgroundImageError: (_, __) {
-                // Fallback icon handled automatically by background widget structure
-              },
+              onBackgroundImageError: widget.community.coverImageUrl.isNotEmpty
+                  ? (_, __) {}
+                  : null,
+              child: widget.community.coverImageUrl.isEmpty
+                  ? const Icon(Icons.group, size: 18, color: Color(0xFF0D631B))
+                  : null,
             ),
             const SizedBox(width: 10),
             Expanded(

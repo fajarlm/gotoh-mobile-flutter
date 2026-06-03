@@ -92,6 +92,43 @@ class CommunityService {
     }
   }
 
+  static Future<Map<String, dynamic>> updateCommunity({
+    required int id,
+    String? name,
+    String? description,
+    String? location,
+    File? coverFile,
+  }) async {
+    try {
+      final token = await AuthService.getToken();
+      final request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('${ApiConfig.baseUrl}/communities/$id'),
+      );
+      request.headers['Authorization'] = 'Bearer $token';
+      if (name != null) request.fields['name'] = name;
+      if (description != null) request.fields['description'] = description;
+      if (location != null) request.fields['location'] = location;
+      if (coverFile != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('cover', coverFile.path),
+        );
+      }
+      final streamed = await request.send();
+      final res = await http.Response.fromStream(streamed);
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        final body = jsonDecode(res.body);
+        return {'success': true, 'data': CommunityModel.fromJson(body['data'])};
+      } else {
+        final body = jsonDecode(res.body);
+        return {'success': false, 'message': body['message'] ?? 'Gagal update komunitas'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Gagal: $e'};
+    }
+  }
+
   static Future<bool> joinCommunity(int id) async {
     try {
       final headers = await AuthService.authHeaders();

@@ -1,3 +1,5 @@
+import 'user_model.dart';
+
 /// Model MedicalCheckup sesuai BE (tabel medical_checkups)
 class MedicalCheckupModel {
   final int id;
@@ -10,6 +12,7 @@ class MedicalCheckupModel {
   final double? weight;
   final double? height;
   final DateTime? createdAt;
+  final UserModel? user;
 
   const MedicalCheckupModel({
     required this.id,
@@ -22,6 +25,7 @@ class MedicalCheckupModel {
     this.weight,
     this.height,
     this.createdAt,
+    this.user,
   });
 
   /// Hitung BMI jika weight & height tersedia
@@ -72,6 +76,7 @@ class MedicalCheckupModel {
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,
+      user: json['User'] != null ? UserModel.fromJson(json['User']) : null,
     );
   }
 }

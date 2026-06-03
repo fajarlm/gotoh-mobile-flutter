@@ -17,6 +17,11 @@ import 'package:fe_mobile/services/health_service.dart';
 import 'package:fe_mobile/services/auth_services.dart';
 import 'package:fe_mobile/views/Auth/auth_page.dart';
 
+// Import Models
+import 'package:fe_mobile/model/user_model.dart';
+import 'package:fe_mobile/model/post_model.dart';
+import 'package:fe_mobile/model/health_model.dart';
+
 // Master Shell Navigation Page for Admin
 class DashboardAdminPage extends StatefulWidget {
   const DashboardAdminPage({super.key});
@@ -71,6 +76,16 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
   bool _isLoading = true;
   bool _isExporting = false;
 
+  // Dynamic Chart Data
+  List<int> _postDaysCounts = [0, 0, 0, 0, 0, 0, 0]; // Sen to Min (Mon=1, Sun=7)
+  int _maxPostCount = 10;
+  Map<String, int> _healthTargetCounts = {
+    'gaya_hidup_sehat': 0,
+    'menurunkan_berat_badan': 0,
+    'membangun_otot': 0,
+    'lainnya': 0,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -80,9 +95,9 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
   Future<void> _fetchStats() async {
     setState(() => _isLoading = true);
     try {
-      final userRes = await UserService.getUsers(limit: 1);
-      final commRes = await CommunityService.getCommunities(limit: 1);
-      final postRes = await PostService.getPosts(limit: 1);
+      final userRes = await UserService.getUsers(limit: 100);
+      final commRes = await CommunityService.getCommunities(limit: 100);
+      final postRes = await PostService.getPosts(limit: 100);
       final checkups = await HealthService.getCheckups();
 
       if (mounted) {
@@ -91,10 +106,48 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
           _totalCommunities = commRes['total'] ?? 0;
           _totalPosts = postRes['total'] ?? 0;
           _totalCheckups = checkups.length;
+
+          // 1. Olah data mingguan untuk Bar Chart
+          _postDaysCounts = [0, 0, 0, 0, 0, 0, 0];
+          final List<dynamic> postsRaw = postRes['data'] ?? [];
+          final List<PostModel> posts = postsRaw.cast<PostModel>();
+          for (var post in posts) {
+            if (post.createdAt != null) {
+              int weekday = post.createdAt!.weekday; // Mon=1, Sun=7
+              _postDaysCounts[weekday - 1]++;
+            }
+          }
+
+          int maxVal = _postDaysCounts.reduce((curr, next) => curr > next ? curr : next);
+          _maxPostCount = maxVal > 0 ? maxVal : 10;
+
+          // 2. Olah data target kesehatan untuk Pie Chart
+          _healthTargetCounts = {
+            'gaya_hidup_sehat': 0,
+            'menurunkan_berat_badan': 0,
+            'membangun_otot': 0,
+            'lainnya': 0,
+          };
+          final List<dynamic> usersRaw = userRes['data'] ?? [];
+          final List<UserModel> users = usersRaw.cast<UserModel>();
+          for (var user in users) {
+            final target = user.healthTarget;
+            if (target == 'gaya_hidup_sehat') {
+              _healthTargetCounts['gaya_hidup_sehat'] = (_healthTargetCounts['gaya_hidup_sehat'] ?? 0) + 1;
+            } else if (target == 'menurunkan_berat_badan') {
+              _healthTargetCounts['menurunkan_berat_badan'] = (_healthTargetCounts['menurunkan_berat_badan'] ?? 0) + 1;
+            } else if (target == 'membangun_otot') {
+              _healthTargetCounts['membangun_otot'] = (_healthTargetCounts['membangun_otot'] ?? 0) + 1;
+            } else {
+              _healthTargetCounts['lainnya'] = (_healthTargetCounts['lainnya'] ?? 0) + 1;
+            }
+          }
+
           _isLoading = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
+      print("Error fetching stats: $e");
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -218,10 +271,10 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Row(
-          children: [
-            const Icon(Icons.admin_panel_settings_rounded, color: Color(0xFF00450D)),
-            const SizedBox(width: 8),
-            const Text(
+          children: const [
+            Icon(Icons.admin_panel_settings_rounded, color: Color(0xFF00450D)),
+            SizedBox(width: 8),
+            Text(
               'GOTOH ADMIN',
               style: TextStyle(
                 color: Color(0xFF00450D),
@@ -232,14 +285,14 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
             ),
           ],
         ),
-          actions: [
-            IconButton(
-              onPressed: _handleLogout,
-              icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
-              tooltip: 'Logout',
-            ),
-            const SizedBox(width: 8),
-          ],
+        actions: [
+          IconButton(
+            onPressed: _handleLogout,
+            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            tooltip: 'Logout',
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -335,7 +388,7 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
                       ),
                 const SizedBox(height: 24),
 
-                // fl_chart bar chart
+                // Bar Chart Card
                 const Text(
                   'Statistik Postingan Mingguan',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF00450D)),
@@ -349,7 +402,47 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: const Color(0xFFE0E4DA)),
                   ),
-                  child: _buildBarChart(),
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator(color: Color(0xFF00450D)))
+                      : _buildBarChart(),
+                ),
+                const SizedBox(height: 24),
+
+                // Pie Chart Card
+                const Text(
+                  'Distribusi Target Kesehatan User',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF00450D)),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  height: 200,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE0E4DA)),
+                  ),
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator(color: Color(0xFF00450D)))
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: PieChart(
+                                PieChartData(
+                                  sectionsSpace: 2,
+                                  centerSpaceRadius: 30,
+                                  sections: _buildPieChartSections(),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              flex: 5,
+                              child: _buildPieLegend(),
+                            ),
+                          ],
+                        ),
                 ),
                 const SizedBox(height: 24),
 
@@ -420,7 +513,7 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        maxY: 300,
+        maxY: _maxPostCount.toDouble() + (_maxPostCount * 0.2), // dinamis
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
@@ -467,15 +560,12 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
         ),
         gridData: const FlGridData(show: false),
         borderData: FlBorderData(show: false),
-        barGroups: [
-          _makeBarGroup(0, 120),
-          _makeBarGroup(1, 195),
-          _makeBarGroup(2, 165),
-          _makeBarGroup(3, 255, isHighest: true),
-          _makeBarGroup(4, 135),
-          _makeBarGroup(5, 210),
-          _makeBarGroup(6, 90),
-        ],
+        barGroups: List.generate(7, (index) {
+          final count = _postDaysCounts[index];
+          // Tandai bar yang memiliki nilai tertinggi
+          final isHighest = count > 0 && count == _postDaysCounts.reduce((curr, next) => curr > next ? curr : next);
+          return _makeBarGroup(index, count.toDouble(), isHighest: isHighest);
+        }),
       ),
     );
   }
@@ -491,8 +581,111 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
           borderRadius: const BorderRadius.all(Radius.circular(4)),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: 300,
+            toY: _maxPostCount.toDouble() + (_maxPostCount * 0.2),
             color: const Color(0xFFE8F5E9),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<PieChartSectionData> _buildPieChartSections() {
+    final ghs = _healthTargetCounts['gaya_hidup_sehat'] ?? 0;
+    final mbb = _healthTargetCounts['menurunkan_berat_badan'] ?? 0;
+    final mo = _healthTargetCounts['membangun_otot'] ?? 0;
+    final other = _healthTargetCounts['lainnya'] ?? 0;
+    final total = ghs + mbb + mo + other;
+
+    if (total == 0) {
+      return [
+        PieChartSectionData(
+          color: Colors.grey.shade300,
+          value: 1,
+          title: '0%',
+          radius: 35,
+          titleStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54),
+        )
+      ];
+    }
+
+    List<PieChartSectionData> sections = [];
+    if (ghs > 0) {
+      sections.add(PieChartSectionData(
+        color: const Color(0xFF00450D),
+        value: ghs.toDouble(),
+        title: '${(ghs / total * 100).toStringAsFixed(0)}%',
+        radius: 35,
+        titleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+      ));
+    }
+    if (mbb > 0) {
+      sections.add(PieChartSectionData(
+        color: const Color(0xFF43A047),
+        value: mbb.toDouble(),
+        title: '${(mbb / total * 100).toStringAsFixed(0)}%',
+        radius: 35,
+        titleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+      ));
+    }
+    if (mo > 0) {
+      sections.add(PieChartSectionData(
+        color: const Color(0xFF90D689),
+        value: mo.toDouble(),
+        title: '${(mo / total * 100).toStringAsFixed(0)}%',
+        radius: 35,
+        titleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+      ));
+    }
+    if (other > 0) {
+      sections.add(PieChartSectionData(
+        color: Colors.blueGrey,
+        value: other.toDouble(),
+        title: '${(other / total * 100).toStringAsFixed(0)}%',
+        radius: 35,
+        titleStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+      ));
+    }
+
+    return sections;
+  }
+
+  Widget _buildPieLegend() {
+    final ghs = _healthTargetCounts['gaya_hidup_sehat'] ?? 0;
+    final mbb = _healthTargetCounts['menurunkan_berat_badan'] ?? 0;
+    final mo = _healthTargetCounts['membangun_otot'] ?? 0;
+    final other = _healthTargetCounts['lainnya'] ?? 0;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _legendItem('Gaya Hidup Sehat', const Color(0xFF00450D), ghs),
+        const SizedBox(height: 8),
+        _legendItem('Menurunkan BB', const Color(0xFF43A047), mbb),
+        const SizedBox(height: 8),
+        _legendItem('Membangun Otot', const Color(0xFF90D689), mo),
+        if (other > 0) ...[
+          const SizedBox(height: 8),
+          _legendItem('Lainnya', Colors.blueGrey, other),
+        ]
+      ],
+    );
+  }
+
+  Widget _legendItem(String name, Color color, int count) {
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '$name ($count)',
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF40493D)),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -551,4 +744,3 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
     );
   }
 }
-

@@ -81,6 +81,44 @@ class PostService {
     }
   }
 
+  // ─── PUT /posts/:id ──────────────────────────────────────────────────────
+  static Future<Map<String, dynamic>> updatePost({
+    required int id,
+    String? content,
+    File? imageFile,
+    bool removeImage = false,
+  }) async {
+    try {
+      final token = await AuthService.getToken();
+      final request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('${ApiConfig.baseUrl}/posts/$id'),
+      );
+      request.headers['Authorization'] = 'Bearer $token';
+      if (content != null) request.fields['content'] = content;
+      if (removeImage) {
+        request.fields['remove_image'] = 'true';
+      }
+      if (imageFile != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('image', imageFile.path),
+        );
+      }
+      final streamed = await request.send();
+      final res = await http.Response.fromStream(streamed);
+
+      if (res.statusCode == 200) {
+        final body = jsonDecode(res.body);
+        return {'success': true, 'data': PostModel.fromJson(body['data'])};
+      } else {
+        final body = jsonDecode(res.body);
+        return {'success': false, 'message': body['message'] ?? 'Gagal update post'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Gagal: $e'};
+    }
+  }
+
   // ─── DELETE /posts/:id ────────────────────────────────────────────────────
   static Future<bool> deletePost(int id) async {
     try {
