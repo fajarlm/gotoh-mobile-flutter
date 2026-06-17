@@ -1,4 +1,3 @@
-import 'package:fe_mobile/views/user/medical_checkup1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,7 +95,7 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
         } else {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MedicalCheckup1()),
+            MaterialPageRoute(builder: (context) => const UserPage()),
           );
         }
       } else {
