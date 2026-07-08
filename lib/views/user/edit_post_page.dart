@@ -18,12 +18,12 @@ class _EditPostPageState extends State<EditPostPage>
   // ── Colors ─────────────────────────────────────────────────────────────────
   static const _primaryGreen = Color(0xFF0D631B);
   static const _lightGreen = Color(0xFFE8F5E9);
-  static const _bgColor = Color(0xFFF4F8F0);
-  static const _textDark = Color(0xFF1A2218);
-  static const _textMid = Color(0xFF4E6952);
+  static const _bgColor = Color(0xFFFAFDF9);
+  static const _textDark = Color(0xFF1B3C21);
+  static const _textMid = Color(0xFF6B8B72);
   static const _textLight = Color(0xFF8FA89A);
   static const _cardColor = Colors.white;
-  static const _borderColor = Color(0xFFE0E4DA);
+  static const _borderColor = Color(0xFFE2EFE0);
   static const _dangerColor = Color(0xFFBA1A1A);
 
   // ── State ──────────────────────────────────────────────────────────────────
@@ -48,9 +48,10 @@ class _EditPostPageState extends State<EditPostPage>
       vsync: this,
       duration: const Duration(milliseconds: 150),
     );
-    _btnScale = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _btnAnim, curve: Curves.easeInOut),
-    );
+    _btnScale = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _btnAnim, curve: Curves.easeInOut));
   }
 
   @override
@@ -149,7 +150,10 @@ class _EditPostPageState extends State<EditPostPage>
     if (res['success'] == true) {
       Navigator.pop(context, true); // signal refresh
     } else {
-      _showSnack(res['message'] ?? 'Gagal memperbarui postingan.', isError: true);
+      _showSnack(
+        res['message'] ?? 'Gagal memperbarui postingan.',
+        isError: true,
+      );
     }
   }
 
@@ -212,15 +216,12 @@ class _EditPostPageState extends State<EditPostPage>
   Widget _buildTopBar() {
     return Container(
       height: 64,
-      decoration: BoxDecoration(
-        color: _cardColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
@@ -228,7 +229,7 @@ class _EditPostPageState extends State<EditPostPage>
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-            color: _textDark,
+            color: Colors.white,
           ),
           const Expanded(
             child: Text(
@@ -237,12 +238,11 @@ class _EditPostPageState extends State<EditPostPage>
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: _textDark,
+                color: Colors.white,
                 letterSpacing: -0.3,
               ),
             ),
           ),
-          // Spacer to center title
           const SizedBox(width: 48),
         ],
       ),
@@ -258,14 +258,16 @@ class _EditPostPageState extends State<EditPostPage>
         CircleAvatar(
           radius: 22,
           backgroundColor: _lightGreen,
-          backgroundImage: avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
+          backgroundImage: avatarUrl.isNotEmpty
+              ? NetworkImage(avatarUrl)
+              : null,
           child: avatarUrl.isEmpty
               ? Text(
                   user?.initials ?? '?',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: _textMid,
+                    color: _primaryGreen,
                   ),
                 )
               : null,
@@ -282,25 +284,28 @@ class _EditPostPageState extends State<EditPostPage>
                 color: _textDark,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: _lightGreen,
                 borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0xFFC9E7CA)),
               ),
-              child: const Row(children: [
-                Icon(Icons.edit_rounded, size: 10, color: _primaryGreen),
-                SizedBox(width: 4),
-                Text(
-                  'Mengedit postingan',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: _primaryGreen,
+              child: const Row(
+                children: [
+                  Icon(Icons.edit_rounded, size: 10, color: _primaryGreen),
+                  SizedBox(width: 4),
+                  Text(
+                    'Mengedit postingan',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: _primaryGreen,
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           ],
         ),
@@ -387,11 +392,7 @@ class _EditPostPageState extends State<EditPostPage>
             maxLines: 7,
             minLines: 4,
             keyboardType: TextInputType.multiline,
-            style: const TextStyle(
-              fontSize: 15,
-              height: 1.6,
-              color: _textDark,
-            ),
+            style: const TextStyle(fontSize: 15, height: 1.6, color: _textDark),
             decoration: const InputDecoration(
               hintText: 'Tulis sesuatu yang bermanfaat...',
               hintStyle: TextStyle(color: _textLight, fontSize: 15),
@@ -425,32 +426,38 @@ class _EditPostPageState extends State<EditPostPage>
               GestureDetector(
                 onTap: _showImageSourceSheet,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: _lightGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Row(children: [
-                    Icon(Icons.swap_horiz_rounded, size: 14, color: _primaryGreen),
-                    SizedBox(width: 4),
-                    Text(
-                      'Ganti Foto',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.swap_horiz_rounded,
+                        size: 14,
                         color: _primaryGreen,
                       ),
-                    ),
-                  ]),
+                      SizedBox(width: 4),
+                      Text(
+                        'Ganti Foto',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: _primaryGreen,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
         ),
         const SizedBox(height: 10),
-        if (_showingImage)
-          _buildImagePreview()
-        else
-          _buildImagePicker(),
+        if (_showingImage) _buildImagePreview() else _buildImagePicker(),
       ],
     );
   }
@@ -474,7 +481,11 @@ class _EditPostPageState extends State<EditPostPage>
           height: 220,
           color: const Color(0xFFF0F0F0),
           child: const Center(
-            child: Icon(Icons.broken_image_rounded, size: 48, color: _textLight),
+            child: Icon(
+              Icons.broken_image_rounded,
+              size: 48,
+              color: _textLight,
+            ),
           ),
         ),
       );
@@ -482,10 +493,7 @@ class _EditPostPageState extends State<EditPostPage>
 
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: imgWidget,
-        ),
+        ClipRRect(borderRadius: BorderRadius.circular(16), child: imgWidget),
         // Gradient overlay at top
         Positioned(
           top: 0,
@@ -517,7 +525,11 @@ class _EditPostPageState extends State<EditPostPage>
                 color: Colors.black.withOpacity(0.6),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
+              child: const Icon(
+                Icons.close_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
             ),
           ),
         ),
@@ -532,18 +544,24 @@ class _EditPostPageState extends State<EditPostPage>
                 color: _primaryGreen,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Row(children: [
-                Icon(Icons.check_circle_rounded, size: 12, color: Colors.white),
-                SizedBox(width: 4),
-                Text(
-                  'Foto Baru',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 12,
                     color: Colors.white,
                   ),
-                ),
-              ]),
+                  SizedBox(width: 4),
+                  Text(
+                    'Foto Baru',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
       ],
@@ -597,10 +615,7 @@ class _EditPostPageState extends State<EditPostPage>
             const SizedBox(height: 2),
             const Text(
               'Galeri atau Kamera',
-              style: TextStyle(
-                fontSize: 11,
-                color: _textLight,
-              ),
+              style: TextStyle(fontSize: 11, color: _textLight),
             ),
           ],
         ),
@@ -741,7 +756,11 @@ class _TypeCard extends StatelessWidget {
                       color: _primaryGreen,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check, size: 12, color: Colors.white),
+                    child: const Icon(
+                      Icons.check,
+                      size: 12,
+                      color: Colors.white,
+                    ),
                   ),
               ],
             ),
@@ -777,34 +796,34 @@ class _ImageSourceSheet extends StatelessWidget {
 
   const _ImageSourceSheet({required this.onGallery, required this.onCamera});
 
-  static const _textDark = Color(0xFF1A2218);
-  static const _textMid = Color(0xFF4E6952);
+  static const _textDark = Color(0xFF1B3C21);
+  static const _textMid = Color(0xFF6B8B72);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Handle
           Container(
-            width: 40,
-            height: 4,
+            width: 44,
+            height: 5,
             decoration: BoxDecoration(
-              color: const Color(0xFFE0E4DA),
-              borderRadius: BorderRadius.circular(4),
+              color: const Color(0xFFE2EFE0),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
           const SizedBox(height: 20),
           const Text(
             'Pilih Sumber Foto',
             style: TextStyle(
-              fontSize: 17,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               color: _textDark,
             ),
@@ -812,7 +831,11 @@ class _ImageSourceSheet extends StatelessWidget {
           const SizedBox(height: 6),
           const Text(
             'Dari mana kamu ingin mengambil gambar?',
-            style: TextStyle(fontSize: 13, color: Color(0xFF8FA89A)),
+            style: TextStyle(
+              fontSize: 13,
+              color: Color(0xFF8FA89A),
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -836,7 +859,7 @@ class _ImageSourceSheet extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -845,14 +868,14 @@ class _ImageSourceSheet extends StatelessWidget {
               style: TextButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
-                  side: const BorderSide(color: Color(0xFFE0E4DA)),
+                  side: const BorderSide(color: Color(0xFFE2EFE0)),
                 ),
               ),
               child: const Text(
                 'Batal',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: _textMid,
                 ),
               ),
@@ -878,9 +901,9 @@ class _SourceOption extends StatelessWidget {
   });
 
   static const _primaryGreen = Color(0xFF0D631B);
-  static const _lightGreen = Color(0xFFE8F5E9);
-  static const _textDark = Color(0xFF1A2218);
-  static const _textMid = Color(0xFF4E6952);
+  static const _lightGreen = Color(0xFFF4F8F4);
+  static const _textDark = Color(0xFF1B3C21);
+  static const _textMid = Color(0xFF6B8B72);
 
   @override
   Widget build(BuildContext context) {
@@ -890,8 +913,8 @@ class _SourceOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: _lightGreen,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFC9E7CA)),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE2EFE0)),
         ),
         child: Column(
           children: [
@@ -900,23 +923,34 @@ class _SourceOption extends StatelessWidget {
               height: 52,
               decoration: BoxDecoration(
                 color: _primaryGreen,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: _primaryGreen.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: Colors.white, size: 26),
+              child: Icon(icon, color: Colors.white, size: 24),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
               label,
               style: const TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 color: _textDark,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             Text(
               subtitle,
-              style: const TextStyle(fontSize: 11, color: _textMid),
+              style: const TextStyle(
+                fontSize: 11,
+                color: _textMid,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
