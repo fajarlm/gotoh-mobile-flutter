@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fe_mobile/model/community_model.dart';
 import 'package:fe_mobile/services/community_service.dart';
 import 'package:fe_mobile/views/user/community_detail.dart';
+import 'package:fe_mobile/views/user/chat_room.dart';
 
 // Alias agar konsisten dengan navigasi dari home_page.dart
 typedef MyCommunityPage = CommunityListPage;
@@ -32,10 +34,89 @@ class _CommunityListPageState extends State<CommunityListPage> {
     if (mounted) setState(() => _currentUserId = prefs.getInt('user_id') ?? 0);
   }
 
+  Timer? _debounce;
+
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _fetchCommunities(query: query);
+    });
+  }
+
+  Future<void> _toggleJoinCommunity(CommunityModel community) async {
+    setState(() => _isLoading = true);
+    final isMember = community.isMember;
+    bool success;
+
+    if (isMember) {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (_) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Keluar Komunitas'),
+          content: Text('Yakin ingin keluar dari komunitas "${community.name}"?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBA1A1A)),
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Keluar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      );
+      if (confirm != true) {
+        setState(() => _isLoading = false);
+        return;
+      }
+      success = await CommunityService.leaveCommunity(community.id);
+      if (success) {
+        setState(() {
+          final idx = _communities.indexWhere((c) => c.id == community.id);
+          if (idx != -1) {
+            _communities[idx] = _communities[idx].copyWith(
+              isMember: false,
+              memberCount: _communities[idx].memberCount - 1,
+            );
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Anda telah keluar dari ${community.name}'), backgroundColor: const Color(0xFF0D631B)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal keluar dari komunitas'), backgroundColor: Color(0xFFBA1A1A)),
+        );
+      }
+    } else {
+      success = await CommunityService.joinCommunity(community.id);
+      if (success) {
+        setState(() {
+          final idx = _communities.indexWhere((c) => c.id == community.id);
+          if (idx != -1) {
+            _communities[idx] = _communities[idx].copyWith(
+              isMember: true,
+              memberCount: _communities[idx].memberCount + 1,
+            );
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Selamat! Anda bergabung dengan ${community.name}'), backgroundColor: const Color(0xFF0D631B)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal bergabung dengan komunitas'), backgroundColor: Color(0xFFBA1A1A)),
+        );
+      }
+    }
+    setState(() => _isLoading = false);
   }
 
   Future<void> _fetchCommunities({String? query}) async {
@@ -391,9 +472,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             ),
                             child: TextField(
                               controller: _searchController,
-                              onChanged: (val) {
-                                _fetchCommunities(query: val);
-                              },
+                              onChanged: _onSearchChanged,
                               decoration: InputDecoration(
                                 hintText: 'Cari diskusi atau komunitas...',
                                 prefixIcon: const Icon(Icons.search, color: Color(0xFF0D631B)),
@@ -622,11 +701,45 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     ),
                     child: const Center(
                       child: Text(
-                        'Lihat',
+                        'Detail',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF0D631B),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (community.isMember) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatRoomKomunitas(community: community),
+                        ),
+                      );
+                    } else {
+                      _toggleJoinCommunity(community);
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0D631B),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        community.isMember ? 'Buka Chat' : 'Gabung',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
