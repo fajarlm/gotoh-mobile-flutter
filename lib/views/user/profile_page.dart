@@ -70,25 +70,26 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bgColor,
+      backgroundColor: const Color(0xFFFAFDF9),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: _bgColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Navigator.canPop(context)
-            ? const BackButton(color: Color(0xFF0D631B))
+            ? const BackButton(color: Colors.white)
             : null,
         title: const Text(
           'Profil',
           style: TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF064E3B),
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
           ),
         ),
         actions: [
           IconButton(
             onPressed: _loadData,
-            icon: const Icon(Icons.refresh_rounded, color: _primaryGreen),
+            icon: const Icon(Icons.refresh_rounded, color: Colors.white),
           ),
         ],
       ),
@@ -104,9 +105,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     _buildHeader(),
    
                     Transform.translate(
-                      offset: const Offset(0, -20),
+                      offset: const Offset(0, -24),
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -115,9 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             _buildHealthTargetCard(),
                             const SizedBox(height: 20),
                             _buildCommunitiesSection(),
-                            const SizedBox(height: 32),
+                            const SizedBox(height: 36),
                             _buildLogoutButton(),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 40),
                           ],
                         ),
                       ),
@@ -139,23 +140,33 @@ class _ProfilePageState extends State<ProfilePage> {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF1B5E20), Color(0xFF2E7D32), Color(0xFF43A047)],
+          colors: [Color(0xFF0D631B), Color(0xFF1E822E), Color(0xFF38B04D)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32),
+          bottomRight: Radius.circular(32),
         ),
       ),
       child: Column(
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: kToolbarHeight + 40),
           // Avatar
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 16, spreadRadius: 2)],
+              border: Border.all(color: Colors.white, width: 4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                )
+              ],
             ),
             child: CircleAvatar(
-              radius: 52,
+              radius: 54,
               backgroundColor: _lightGreen,
               backgroundImage: (avatarUrl.isNotEmpty && !avatarUrl.endsWith('/null'))
                   ? NetworkImage(avatarUrl)
@@ -168,44 +179,45 @@ class _ProfilePageState extends State<ProfilePage> {
                   : null,
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Text(
             username.isNotEmpty ? username : 'User',
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.3),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.4),
           ),
           const SizedBox(height: 4),
           Text(
             email,
-            style: const TextStyle(fontSize: 14, color: Colors.white70),
+            style: const TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.w500),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 12),
           // Role badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
               (_user?.role ?? 'user').toUpperCase(),
-              style: const TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w700, letterSpacing: 1),
+              style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.w800, letterSpacing: 1.2),
             ),
           ),
           const SizedBox(height: 20),
           // Edit button
           ElevatedButton.icon(
             onPressed: _editProfile,
-            icon: const Icon(Icons.edit_rounded, size: 18),
-            label: const Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600)),
+            icon: const Icon(Icons.edit_rounded, size: 16, color: _primaryGreen),
+            label: const Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: _primaryGreen,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              elevation: 0,
+              elevation: 4,
+              shadowColor: Colors.black.withOpacity(0.08),
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 36),
         ],
       ),
     );
@@ -219,32 +231,36 @@ class _ProfilePageState extends State<ProfilePage> {
         ? '${_user!.createdAt!.day}/${_user!.createdAt!.month}/${_user!.createdAt!.year}'
         : '-';
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE0E4DA)),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Informasi Akun',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: _primaryGreen),
-            ),
-            const SizedBox(height: 16),
-            _infoRow(Icons.person_outline_rounded, 'Username', prefs_username),
-            const Divider(height: 20, color: Color(0xFFF0F4EA)),
-            _infoRow(Icons.email_outlined, 'Email', prefs_email),
-            const Divider(height: 20, color: Color(0xFFF0F4EA)),
-            _infoRow(Icons.calendar_today_outlined, 'Bergabung', joinDate),
-            const Divider(height: 20, color: Color(0xFFF0F4EA)),
-            _infoRow(Icons.group_outlined, 'Komunitas', '${_joinedCommunities.length} komunitas'),
-          ],
-        ),
+      padding: const EdgeInsets.all(22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Informasi Akun',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: _primaryGreen),
+          ),
+          const SizedBox(height: 20),
+          _infoRow(Icons.person_outline_rounded, 'Username', prefs_username),
+          const Divider(height: 24, color: Color(0xFFE2EFE0)),
+          _infoRow(Icons.email_outlined, 'Email', prefs_email),
+          const Divider(height: 24, color: Color(0xFFE2EFE0)),
+          _infoRow(Icons.calendar_today_outlined, 'Bergabung', joinDate),
+          const Divider(height: 24, color: Color(0xFFE2EFE0)),
+          _infoRow(Icons.group_outlined, 'Komunitas', '${_joinedCommunities.length} komunitas'),
+        ],
       ),
     );
   }
@@ -253,19 +269,22 @@ class _ProfilePageState extends State<ProfilePage> {
     return Row(
       children: [
         Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(color: _lightGreen, borderRadius: BorderRadius.circular(10)),
-          child: Icon(icon, size: 18, color: _primaryGreen),
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8F5E9),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, size: 20, color: _primaryGreen),
         ),
         const SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500)),
-              const SizedBox(height: 2),
-              Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218))),
+              Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF6B8B72), fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF1A2218))),
             ],
           ),
         ),
@@ -299,57 +318,61 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final info = target != null ? targets[target] : null;
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE0E4DA)),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: info != null ? info['color'] as Color : _lightGreen,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(
-                info != null ? info['icon'] as IconData : Icons.track_changes_rounded,
-                size: 28,
-                color: info != null ? info['iconColor'] as Color : _primaryGreen,
-              ),
+      padding: const EdgeInsets.all(22),
+      child: Row(
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: info != null ? info['color'] as Color : const Color(0xFFE8F5E9),
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Target Kesehatan', style: TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 4),
-                  Text(
-                    info != null ? info['label'] as String : 'Belum diatur',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFF1A2218)),
-                  ),
-                ],
-              ),
+            child: Icon(
+              info != null ? info['icon'] as IconData : Icons.track_changes_rounded,
+              size: 28,
+              color: info != null ? info['iconColor'] as Color : _primaryGreen,
             ),
-            GestureDetector(
-              onTap: _editProfile,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: _lightGreen,
-                  borderRadius: BorderRadius.circular(20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Target Kesehatan', style: TextStyle(fontSize: 11, color: Color(0xFF6B8B72), fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(
+                  info != null ? info['label'] as String : 'Belum diatur',
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF1A2218)),
                 ),
-                child: const Text('Ubah', style: TextStyle(fontSize: 12, color: _primaryGreen, fontWeight: FontWeight.w600)),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          GestureDetector(
+            onTap: _editProfile,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8F5E9),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: const Text('Ubah', style: TextStyle(fontSize: 12, color: _primaryGreen, fontWeight: FontWeight.w700)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -364,14 +387,14 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             const Text(
               'Komunitas Diikuti',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Color(0xFF1A2218)),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Color(0xFF1B3C21)),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(color: _lightGreen, borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(30)),
               child: Text(
                 '${_joinedCommunities.length}',
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: _primaryGreen),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _primaryGreen),
               ),
             ),
           ],
@@ -383,14 +406,14 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE0E4DA)),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFFE2EFE0)),
             ),
             child: const Column(
               children: [
-                Icon(Icons.group_add_outlined, size: 40, color: Colors.grey),
+                Icon(Icons.group_add_outlined, size: 40, color: Color(0xFF6B8B72)),
                 SizedBox(height: 8),
-                Text('Belum bergabung komunitas', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                Text('Belum bergabung komunitas', style: TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.w500)),
               ],
             ),
           )
@@ -409,9 +432,9 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFD0E8D2)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 6, offset: const Offset(0, 2))],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2))],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -431,7 +454,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(width: 8),
           Text(
             community.name,
-            style: const TextStyle(color: Color(0xFF334D37), fontWeight: FontWeight.w600, fontSize: 13),
+            style: const TextStyle(color: Color(0xFF334D37), fontWeight: FontWeight.w700, fontSize: 13),
           ),
         ],
       ),
@@ -446,11 +469,9 @@ class _ProfilePageState extends State<ProfilePage> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFEBEE), Color(0xFFFFCDD2)],
-          ),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFBA1A1A).withOpacity(0.3)),
+          color: const Color(0xFFFFEBEE),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFBA1A1A).withOpacity(0.15)),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -458,8 +479,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Icon(Icons.logout_rounded, color: Color(0xFFBA1A1A), size: 20),
             SizedBox(width: 8),
             Text(
-              'Keluar',
-              style: TextStyle(fontSize: 15, color: Color(0xFFBA1A1A), fontWeight: FontWeight.w700),
+              'Keluar dari GOTOH',
+              style: TextStyle(fontSize: 14, color: Color(0xFFBA1A1A), fontWeight: FontWeight.w800),
             ),
           ],
         ),
