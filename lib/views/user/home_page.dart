@@ -33,18 +33,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   static const _primaryGreen = Color(0xFF0D631B);
   static const _lightGreen = Color(0xFFC9E7CA);
-  static const _bgColor = Color(0xFFF4F8F0);
+  static const _bgColor = Color(0xFFFAFDF9);
   static const _cardColor = Colors.white;
-  static const _textDark = Color(0xFF1A2218);
-  static const _textMid = Color(0xFF4E6952);
-  static const _textLight = Color(0xFF8FA89A);
+  static const _textDark = Color(0xFF1B3C21);
+  static const _textMid = Color(0xFF5A7561);
+  static const _textLight = Color(0xFF6B8B72);
 
   final List<String> _filterOptions = ['Semua', 'Publik', 'Terpopuler'];
 
   @override
   void initState() {
     super.initState();
-    _fabAnim = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _fabAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
     _fabAnim.forward();
     _loadUserInfo();
     _fetchPosts(refresh: true);
@@ -59,8 +62,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200 &&
-        !_isLoading && _hasMore) _fetchPosts();
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoading &&
+        _hasMore)
+      _fetchPosts();
   }
 
   Future<void> _loadUserInfo() async {
@@ -70,24 +76,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _username = prefs.getString('username') ?? 'User';
       _currentUserId = prefs.getInt('user_id') ?? 0;
       final avatar = prefs.getString('avatar');
-      _avatarUrl = (avatar != null && avatar.isNotEmpty) ? ApiConfig.imageUrl(avatar) : null;
+      _avatarUrl = (avatar != null && avatar.isNotEmpty)
+          ? ApiConfig.imageUrl(avatar)
+          : null;
     });
   }
 
   Future<void> _fetchPosts({bool refresh = false}) async {
     if (_isLoading) return;
-    if (refresh) { _currentPage = 1; _hasMore = true; }
+    if (refresh) {
+      _currentPage = 1;
+      _hasMore = true;
+    }
     setState(() => _isLoading = true);
 
     String? typeFilter;
     if (_selectedFilter == 'Publik') typeFilter = 'public';
 
-    final result = await PostService.getPosts(type: typeFilter, page: _currentPage, limit: _perPage);
+    final result = await PostService.getPosts(
+      type: typeFilter,
+      page: _currentPage,
+      limit: _perPage,
+    );
     if (!mounted) return;
     if (result['success'] == true) {
       final newPosts = result['data'] as List<PostModel>;
       setState(() {
-        if (refresh) _posts = newPosts; else _posts.addAll(newPosts);
+        if (refresh)
+          _posts = newPosts;
+        else
+          _posts.addAll(newPosts);
         _hasMore = newPosts.length == _perPage;
         _currentPage++;
       });
@@ -109,7 +127,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final idx = _posts.indexWhere((p) => p.id == postId);
       if (idx != -1) {
         final p = _posts[idx];
-        _posts[idx] = p.copyWith(isLiked: !p.isLiked, likeCount: p.isLiked ? p.likeCount - 1 : p.likeCount + 1);
+        _posts[idx] = p.copyWith(
+          isLiked: !p.isLiked,
+          likeCount: p.isLiked ? p.likeCount - 1 : p.likeCount + 1,
+        );
       }
     });
     await PostService.toggleLike(postId);
@@ -119,15 +140,48 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Postingan'),
-        content: const Text('Apakah kamu yakin ingin menghapus postingan ini?'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text(
+          'Hapus Postingan',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1B3C21),
+          ),
+        ),
+        content: const Text(
+          'Apakah kamu yakin ingin menghapus postingan ini?',
+          style: TextStyle(
+            color: Color(0xFF6B8B72),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: Color(0xFF6B8B72),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBA1A1A)),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Hapus', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFBA1A1A),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            child: const Text(
+              'Hapus',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -138,11 +192,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (ok) {
       setState(() => _posts.removeWhere((p) => p.id == post.id));
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Postingan berhasil dihapus'), backgroundColor: Color(0xFF0D631B)),
+        const SnackBar(
+          content: Text('Postingan berhasil dihapus'),
+          backgroundColor: Color(0xFF0D631B),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal menghapus postingan'), backgroundColor: Color(0xFFBA1A1A)),
+        const SnackBar(
+          content: Text('Gagal menghapus postingan'),
+          backgroundColor: Color(0xFFBA1A1A),
+        ),
       );
     }
   }
@@ -187,13 +247,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         scale: CurvedAnimation(parent: _fabAnim, curve: Curves.elasticOut),
         child: FloatingActionButton(
           onPressed: () async {
-            final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => const PostCreatePage()));
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PostCreatePage()),
+            );
             if (result == true) _fetchPosts(refresh: true);
           },
           backgroundColor: _primaryGreen,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 0,
           child: const Icon(Icons.edit_rounded, size: 26),
         ),
       ),
@@ -210,50 +275,87 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       toolbarHeight: 64,
       titleSpacing: 0,
       flexibleSpace: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: _bgColor,
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          border: Border(bottom: BorderSide(color: Color(0xFFE2EFE0))),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(children: [
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(color: _primaryGreen, borderRadius: BorderRadius.circular(10)),
-                child: const Icon(Icons.health_and_safety_rounded, color: Colors.white, size: 22),
-              ),
-              const SizedBox(width: 10),
-              const Text('GOTOH', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: _primaryGreen)),
-            ]),
-            Row(children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications_none_rounded, color: _textMid, size: 26),
-                padding: EdgeInsets.zero,
-              ),
-              const SizedBox(width: 4),
-              GestureDetector(
-                onTap: () {
-                  final userShell = UserPage.of(context);
-                  if (userShell != null) {
-                    userShell.setTab(3);
-                  } else {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
-                  }
-                },
-                child: CircleAvatar(
-                  radius: 19,
-                  backgroundColor: _lightGreen,
-                  backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
-                  child: _avatarUrl == null
-                      ? Text(_username.isNotEmpty ? _username[0].toUpperCase() : '?',
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: _textMid))
-                      : null,
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: _primaryGreen,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.health_and_safety_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
-              ),
-            ]),
+                const SizedBox(width: 10),
+                const Text(
+                  'GOTOH',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                    color: _primaryGreen,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.notifications_none_rounded,
+                    color: _textMid,
+                    size: 26,
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () {
+                    final userShell = UserPage.of(context);
+                    if (userShell != null) {
+                      userShell.setTab(3);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfilePage()),
+                      );
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 19,
+                    backgroundColor: _lightGreen,
+                    backgroundImage: _avatarUrl != null
+                        ? NetworkImage(_avatarUrl!)
+                        : null,
+                    child: _avatarUrl == null
+                        ? Text(
+                            _username.isNotEmpty
+                                ? _username[0].toUpperCase()
+                                : '?',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: _textMid,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -263,7 +365,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // ── Greeting ─────────────────────────────────────────────────────────────
   Widget _buildGreeting() {
     final hour = DateTime.now().hour;
-    final greeting = hour < 12 ? 'Selamat Pagi' : hour < 17 ? 'Selamat Siang' : 'Selamat Malam';
+    final greeting = hour < 12
+        ? 'Selamat Pagi'
+        : hour < 17
+        ? 'Selamat Siang'
+        : 'Selamat Malam';
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -275,13 +381,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0D631B).withOpacity(0.18),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            )
-          ],
         ),
         child: Stack(
           children: [
@@ -323,7 +422,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(30),
@@ -343,16 +445,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Container(
                   width: 56,
                   height: 56,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
                   ),
                   child: const Icon(
                     Icons.favorite_rounded,
@@ -380,19 +475,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: _cardColor,
                 borderRadius: BorderRadius.circular(14),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 10, offset: const Offset(0, 3))],
+                border: Border.all(color: const Color(0xFFE2EFE0)),
               ),
               child: TextField(
                 onChanged: (v) => setState(() => _searchQuery = v),
                 decoration: InputDecoration(
                   hintText: 'Cari postingan, tips kesehatan...',
                   hintStyle: const TextStyle(color: _textLight, fontSize: 13),
-                  prefixIcon: const Icon(Icons.search_rounded, size: 22, color: _textLight),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    size: 22,
+                    color: _textLight,
+                  ),
                   suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(onPressed: () => setState(() => _searchQuery = ''), icon: const Icon(Icons.close_rounded, size: 20, color: _textLight))
+                      ? IconButton(
+                          onPressed: () => setState(() => _searchQuery = ''),
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            size: 20,
+                            color: _textLight,
+                          ),
+                        )
                       : null,
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
@@ -414,17 +523,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: sel ? _primaryGreen : _cardColor,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
+                        border: Border.all(
+                          color: sel ? _primaryGreen : const Color(0xFFE2EFE0),
+                        ),
                       ),
-                      child: Text(f,
-                          style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w600,
-                            color: sel ? Colors.white : _textMid,
-                          )),
+                      child: Text(
+                        f,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: sel ? Colors.white : _textMid,
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -446,35 +563,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (!_isLoading && _filteredPosts.isEmpty) {
       return SliverFillRemaining(
         child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              width: 80, height: 80,
-              decoration: BoxDecoration(color: _lightGreen, borderRadius: BorderRadius.circular(20)),
-              child: const Icon(Icons.article_outlined, size: 40, color: _textMid),
-            ),
-            const SizedBox(height: 16),
-            const Text('Belum ada postingan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: _textMid)),
-            const SizedBox(height: 6),
-            const Text('Jadilah yang pertama berbagi!', style: TextStyle(fontSize: 13, color: _textLight)),
-          ]),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F8F4),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFE2EFE0)),
+                ),
+                child: const Icon(
+                  Icons.article_outlined,
+                  size: 40,
+                  color: _textMid,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Belum ada postingan',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: _textMid,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Jadilah yang pertama berbagi!',
+                style: TextStyle(fontSize: 13, color: _textLight),
+              ),
+            ],
+          ),
         ),
       );
     }
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (ctx, i) {
-          if (i == _filteredPosts.length) {
-            return _isLoading
-                ? const Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator(color: _primaryGreen)))
-                : const SizedBox(height: 100);
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: _buildPostCard(_filteredPosts[i]),
-          );
-        },
-        childCount: _filteredPosts.length + 1,
-      ),
+      delegate: SliverChildBuilderDelegate((ctx, i) {
+        if (i == _filteredPosts.length) {
+          return _isLoading
+              ? const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                    child: CircularProgressIndicator(color: _primaryGreen),
+                  ),
+                )
+              : const SizedBox(height: 100);
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: _buildPostCard(_filteredPosts[i]),
+        );
+      }, childCount: _filteredPosts.length + 1),
     );
   }
 
@@ -485,19 +626,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final isPublic = post.type == 'public';
 
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostDetailPage(postId: post.id))),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PostDetailPage(postId: post.id)),
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: _cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: const Color(0xFFE2EFE0)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            )
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -513,16 +650,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: isPublic
-                          ? const LinearGradient(colors: [Color(0xFF0D631B), Color(0xFF38B04D)])
+                          ? const LinearGradient(
+                              colors: [Color(0xFF0D631B), Color(0xFF38B04D)],
+                            )
                           : null,
                       color: isPublic ? null : const Color(0xFFD0DCD0),
                     ),
                     child: CircleAvatar(
                       radius: 21,
                       backgroundColor: _lightGreen,
-                      backgroundImage: avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
+                      backgroundImage: avatarUrl.isNotEmpty
+                          ? NetworkImage(avatarUrl)
+                          : null,
                       child: avatarUrl.isEmpty
-                          ? Text(user?.initials ?? '?', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: _primaryGreen))
+                          ? Text(
+                              user?.initials ?? '?',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: _primaryGreen,
+                              ),
+                            )
                           : null,
                     ),
                   ),
@@ -533,23 +681,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         Text(
                           user?.username ?? 'Unknown',
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: _textDark),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: _textDark,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
                               decoration: BoxDecoration(
-                                color: isPublic ? const Color(0xFFE8F5E9) : const Color(0xFFFFF3E0),
+                                color: isPublic
+                                    ? const Color(0xFFE8F5E9)
+                                    : const Color(0xFFFFF3E0),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
                                 children: [
                                   Icon(
-                                    isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
+                                    isPublic
+                                        ? Icons.public_rounded
+                                        : Icons.lock_outline_rounded,
                                     size: 11,
-                                    color: isPublic ? _primaryGreen : Colors.orange.shade800,
+                                    color: isPublic
+                                        ? _primaryGreen
+                                        : Colors.orange.shade800,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
@@ -557,7 +718,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700,
-                                      color: isPublic ? _primaryGreen : Colors.orange.shade800,
+                                      color: isPublic
+                                          ? _primaryGreen
+                                          : Colors.orange.shade800,
                                     ),
                                   ),
                                 ],
@@ -567,7 +730,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               const SizedBox(width: 8),
                               Text(
                                 '· ${_formatDate(post.createdAt!)}',
-                                style: const TextStyle(fontSize: 11, color: _textLight, fontWeight: FontWeight.w500),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: _textLight,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ],
@@ -579,8 +746,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     PopupMenuButton<String>(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      icon: const Icon(Icons.more_horiz_rounded, color: _textLight, size: 22),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      icon: const Icon(
+                        Icons.more_horiz_rounded,
+                        color: _textLight,
+                        size: 22,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       onSelected: (val) {
                         if (val == 'edit') _showEditPostDialog(post);
                         if (val == 'delete') _onDeletePost(post);
@@ -590,9 +763,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit_outlined, size: 18, color: Color(0xFF0D631B)),
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 18,
+                                color: Color(0xFF0D631B),
+                              ),
                               const SizedBox(width: 8),
-                              Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
+                              Text(
+                                'Edit',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
                             ],
                           ),
                         ),
@@ -600,9 +780,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           value: 'delete',
                           child: Row(
                             children: [
-                              Icon(Icons.delete_outline, size: 18, color: Color(0xFFBA1A1A)),
+                              Icon(
+                                Icons.delete_outline,
+                                size: 18,
+                                color: Color(0xFFBA1A1A),
+                              ),
                               const SizedBox(width: 8),
-                              Text('Hapus', style: TextStyle(color: Color(0xFFBA1A1A), fontWeight: FontWeight.w600)),
+                              Text(
+                                'Hapus',
+                                style: TextStyle(
+                                  color: Color(0xFFBA1A1A),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -622,14 +812,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   post.content!,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, height: 1.55, color: _textDark, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.55,
+                    color: _textDark,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
 
             // ── Image with proper padding and rounding ──
             if (post.image != null && post.image!.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: Image.network(
@@ -643,7 +841,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         color: const Color(0xFFF4F6F4),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: const Icon(Icons.image_not_supported_rounded, size: 36, color: _textLight),
+                      child: const Icon(
+                        Icons.image_not_supported_rounded,
+                        size: 36,
+                        color: _textLight,
+                      ),
                     ),
                   ),
                 ),
@@ -655,10 +857,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Row(
                 children: [
                   _actionBtn(
-                    icon: post.isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                    icon: post.isLiked
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_outline_rounded,
                     label: '${post.likeCount}',
-                    color: post.isLiked ? const Color(0xFFD32F2F) : const Color(0xFF5A7561),
-                    bgColor: post.isLiked ? const Color(0xFFFFEBEE) : const Color(0xFFF4F8F4),
+                    color: post.isLiked
+                        ? const Color(0xFFD32F2F)
+                        : const Color(0xFF5A7561),
+                    bgColor: post.isLiked
+                        ? const Color(0xFFFFEBEE)
+                        : const Color(0xFFF4F8F4),
                     onTap: () => _onLikePost(post.id),
                   ),
                   const SizedBox(width: 8),
@@ -667,7 +875,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     label: '${post.commentCount}',
                     color: const Color(0xFF0D631B),
                     bgColor: const Color(0xFFE8F5E9),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostDetailPage(postId: post.id))),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PostDetailPage(postId: post.id),
+                      ),
+                    ),
                   ),
                   const Spacer(),
                   _actionBtn(
@@ -709,7 +922,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
             ),
           ],
         ),
@@ -724,5 +941,4 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (diff.inDays < 7) return '${diff.inDays}h';
     return '${dt.day}/${dt.month}';
   }
-
- }
+}
