@@ -226,21 +226,28 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFFAFDF9),
       appBar: AppBar(
-        backgroundColor: const Color(0xCCECFDF5),
-        elevation: 1,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        elevation: 0,
         title: const Text(
           'Edit Profil',
           style: TextStyle(
-            color: Color(0xFF064E3B),
-            fontSize: 20,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF0D631B)),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -270,11 +277,11 @@ class _EditProfileState extends State<EditProfile> {
                                 side: const BorderSide(width: 4, color: Colors.white),
                                 borderRadius: BorderRadius.circular(24),
                               ),
-                              shadows: const [
+                              shadows: [
                                 BoxShadow(
-                                  color: Color(0x19000000),
-                                  blurRadius: 6,
-                                  offset: Offset(0, 4),
+                                  color: Colors.black.withOpacity(0.06),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
                             ),
@@ -283,20 +290,27 @@ class _EditProfileState extends State<EditProfile> {
                                 _currentUser?.initials ?? '?',
                                 style: const TextStyle(
                                   fontSize: 36,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w900,
                                   color: Color(0xFF0D631B),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            _currentUser?.role.toUpperCase() ?? 'USER',
-                            style: const TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8F5E9),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Text(
+                              _currentUser?.role.toUpperCase() ?? 'USER',
+                              style: const TextStyle(
+                                color: Color(0xFF0D631B),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1.2,
+                              ),
                             ),
                           ),
                         ],
@@ -307,17 +321,18 @@ class _EditProfileState extends State<EditProfile> {
                     // Inputs Card
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: ShapeDecoration(
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
+                          side: const BorderSide(color: Color(0xFFE2EFE0)),
                         ),
-                        shadows: const [
+                        shadows: [
                           BoxShadow(
-                            color: Color(0x0A000000),
-                            blurRadius: 12,
-                            offset: Offset(0, 4),
+                            color: Colors.black.withOpacity(0.02),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
                           )
                         ],
                       ),
@@ -328,27 +343,26 @@ class _EditProfileState extends State<EditProfile> {
                           const Text(
                             'Nama Pengguna',
                             style: TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6B8B72),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _usernameController,
                             style: const TextStyle(
-                              color: Color(0xFF181D17),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
+                              color: Color(0xFF1A2218),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.person, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFF0D631B)),
                               filled: true,
-                              fillColor: const Color(0xFFF1F5EB),
+                              fillColor: const Color(0xFFF4F8F4),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -362,10 +376,9 @@ class _EditProfileState extends State<EditProfile> {
                           const Text(
                             'Email',
                             style: TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6B8B72),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -373,17 +386,17 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(
-                              color: Color(0xFF181D17),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
+                              color: Color(0xFF1A2218),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.email, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF0D631B)),
                               filled: true,
-                              fillColor: const Color(0xFFF1F5EB),
+                              fillColor: const Color(0xFFF4F8F4),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -401,10 +414,9 @@ class _EditProfileState extends State<EditProfile> {
                           const Text(
                             'Berat Badan (kg)',
                             style: TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6B8B72),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -412,18 +424,19 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _weightController,
                             keyboardType: TextInputType.number,
                             style: const TextStyle(
-                              color: Color(0xFF181D17),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
+                              color: Color(0xFF1A2218),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.scale, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(Icons.scale_outlined, color: Color(0xFF0D631B)),
                               suffixText: 'kg',
+                              suffixStyle: const TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold),
                               filled: true,
-                              fillColor: const Color(0xFFF1F5EB),
+                              fillColor: const Color(0xFFF4F8F4),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -434,10 +447,9 @@ class _EditProfileState extends State<EditProfile> {
                           const Text(
                             'Tinggi Badan (cm)',
                             style: TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6B8B72),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -445,18 +457,19 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _heightController,
                             keyboardType: TextInputType.number,
                             style: const TextStyle(
-                              color: Color(0xFF181D17),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
+                              color: Color(0xFF1A2218),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.height, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(Icons.height_rounded, color: Color(0xFF0D631B)),
                               suffixText: 'cm',
+                              suffixStyle: const TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold),
                               filled: true,
-                              fillColor: const Color(0xFFF1F5EB),
+                              fillColor: const Color(0xFFF4F8F4),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -467,10 +480,9 @@ class _EditProfileState extends State<EditProfile> {
                           const Text(
                             'Target Kesehatan',
                             style: TextStyle(
-                              color: Color(0xFF40493D),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6B8B72),
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -482,12 +494,12 @@ class _EditProfileState extends State<EditProfile> {
                               });
                             },
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.track_changes, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(Icons.track_changes_rounded, color: Color(0xFF0D631B)),
                               filled: true,
-                              fillColor: const Color(0xFFF1F5EB),
+                              fillColor: const Color(0xFFF4F8F4),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
@@ -497,15 +509,15 @@ class _EditProfileState extends State<EditProfile> {
                                 child: Text(
                                   item['label']!,
                                   style: const TextStyle(
-                                    color: Color(0xFF181D17),
-                                    fontSize: 16,
-                                    fontFamily: 'Inter',
+                                    color: Color(0xFF1A2218),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               );
                             }).toList(),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
                           // Ubah Kata Sandi Toggle
                           GestureDetector(
@@ -517,7 +529,7 @@ class _EditProfileState extends State<EditProfile> {
                             child: Row(
                               children: [
                                 Icon(
-                                  _showPasswordInput ? Icons.keyboard_arrow_up : Icons.lock_outline,
+                                  _showPasswordInput ? Icons.keyboard_arrow_up : Icons.lock_outline_rounded,
                                   color: const Color(0xFF0D631B),
                                   size: 20,
                                 ),
@@ -526,9 +538,8 @@ class _EditProfileState extends State<EditProfile> {
                                   _showPasswordInput ? 'Batal Ubah Kata Sandi' : 'Ubah Kata Sandi',
                                   style: const TextStyle(
                                     color: Color(0xFF0D631B),
-                                    fontSize: 14,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
@@ -540,10 +551,9 @@ class _EditProfileState extends State<EditProfile> {
                             const Text(
                               'Kata Sandi Baru',
                               style: TextStyle(
-                                color: Color(0xFF40493D),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF6B8B72),
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -551,17 +561,17 @@ class _EditProfileState extends State<EditProfile> {
                               controller: _passwordController,
                               obscureText: true,
                               style: const TextStyle(
-                                color: Color(0xFF181D17),
-                                fontSize: 16,
-                                fontFamily: 'Inter',
+                                color: Color(0xFF1A2218),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
                               ),
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock, color: Color(0xFF0D631B)),
+                                prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFF0D631B)),
                                 filled: true,
-                                fillColor: const Color(0xFFF1F5EB),
+                                fillColor: const Color(0xFFF4F8F4),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(14),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
@@ -590,22 +600,23 @@ class _EditProfileState extends State<EditProfile> {
                               // Save Button
                               SizedBox(
                                 width: double.infinity,
-                                height: 56,
+                                height: 52,
                                 child: ElevatedButton(
                                   onPressed: _saveChanges,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF0D631B),
                                     foregroundColor: Colors.white,
+                                    elevation: 4,
+                                    shadowColor: const Color(0xFF0D631B).withOpacity(0.3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16),
                                     ),
-                                    elevation: 2,
                                   ),
                                   child: const Text(
                                     'Simpan Perubahan',
                                     style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -615,12 +626,12 @@ class _EditProfileState extends State<EditProfile> {
                               // Delete Account Button
                               SizedBox(
                                 width: double.infinity,
-                                height: 56,
+                                height: 52,
                                 child: OutlinedButton(
                                   onPressed: _confirmDeleteAccount,
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: const Color(0xFFBA1A1A),
-                                    side: const BorderSide(color: Color(0xFFBA1A1A), width: 2),
+                                    side: const BorderSide(color: Color(0xFFBA1A1A), width: 1.5),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(16),
                                     ),
@@ -628,8 +639,8 @@ class _EditProfileState extends State<EditProfile> {
                                   child: const Text(
                                     'Hapus Akun',
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
