@@ -290,16 +290,9 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                 top: 12,
                 bottom: 16,
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                border: const Border(top: BorderSide(color: Color(0xFFE2EFE0))),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
-                    blurRadius: 10,
-                    offset: const Offset(0, -3),
-                  ),
-                ],
+                border: Border(top: BorderSide(color: Color(0xFFE2EFE0))),
               ),
               child: Row(
                 children: [
@@ -315,13 +308,13 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                         maxLines: null,
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF1A2218),
+                          color: Color(0xFF1B3C21),
                           fontWeight: FontWeight.w500,
                         ),
                         decoration: const InputDecoration(
                           hintText: 'Ketik pesan...',
                           hintStyle: TextStyle(
-                            color: Color(0xFF8FA89A),
+                            color: Color(0xFF6B8B72),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -339,16 +332,9 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                     onTap: _sendMessage,
                     child: Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0D631B),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF0D631B),
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF0D631B).withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
                       ),
                       child: const Icon(
                         Icons.send_rounded,
@@ -439,7 +425,7 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: isMe ? Colors.white : const Color(0xFF1A2218),
+                      color: isMe ? Colors.white : const Color(0xFF1B3C21),
                     ),
                   ),
                 ),
