@@ -145,6 +145,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text(
             'Buat Komunitas Baru',
             style: TextStyle(color: Color(0xFF0D631B), fontWeight: FontWeight.bold),
@@ -155,26 +156,34 @@ class _CommunityListPageState extends State<CommunityListPage> {
               children: [
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Nama Komunitas',
-                    hintText: 'Masukkan nama komunitas',
+                    filled: true,
+                    fillColor: const Color(0xFFF4F8F0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: descController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Deskripsi',
                     hintText: 'Minimal 10 karakter',
+                    filled: true,
+                    fillColor: const Color(0xFFF4F8F0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: locController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Lokasi (Opsional)',
                     hintText: 'Contoh: Jakarta',
+                    filled: true,
+                    fillColor: const Color(0xFFF4F8F0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                   ),
                 ),
               ],
@@ -186,7 +195,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
               child: const Text('Batal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0D631B)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0D631B),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
               onPressed: () async {
                 final name = nameController.text.trim();
                 final desc = descController.text.trim();
@@ -280,7 +292,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Edit Komunitas', style: TextStyle(color: Color(0xFF0D631B), fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Column(
@@ -364,417 +376,494 @@ class _CommunityListPageState extends State<CommunityListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFF4F8F0),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Custom App Bar
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7FBF0).withOpacity(0.8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+        child: RefreshIndicator(
+          onRefresh: () => _fetchCommunities(query: _searchController.text),
+          color: const Color(0xFF0D631B),
+          child: Column(
+            children: [
+              // Beautiful Gradient Top Banner
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF0D631B), Color(0xFF1B8C2A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header Logo and User Profile Info
                     Row(
-                      children: const [
-                        Icon(
-                          Icons.menu,
-                          size: 24,
-                          color: Color(0xFF181D17),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.health_and_safety_rounded, color: Colors.white, size: 18),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'GOTOH',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -0.5,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 12),
-                        Text(
-                          'GOTOH',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.5,
-                            color: Color(0xFF181D17),
+                        // Add Community Button (Glassmorphism look)
+                        ElevatedButton.icon(
+                          onPressed: _onCreateCommunity,
+                          icon: const Icon(Icons.add, size: 16),
+                          label: const Text(
+                            'Buat',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.2),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           ),
                         ),
                       ],
                     ),
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFFC9E7CA),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Komunitas Kesehatan',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: -0.3,
                       ),
-                      child: const Icon(Icons.person, size: 16, color: Color(0xFF0D631B)),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Temukan teman diskusi dan kelola komunitas hidup sehat Anda.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            // Main Content
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () => _fetchCommunities(query: _searchController.text),
-                color: const Color(0xFF0D631B),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Section Header
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Komunitas Kesehatan',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.24,
-                              color: Color(0xFF181D17),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Temukan dan kelola komunitas kesehatan Anda untuk hidup yang lebih baik.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFF40493D),
-                            ),
-                          ),
-                        ],
+
+              // Search Bar overlapping and margin
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                      const SizedBox(height: 24),
-                      // Search and Create Row
-                      Column(
-                        children: [
-                          // Search Input Field
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: const Color(0xFFE0E4DA)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.02),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              onChanged: _onSearchChanged,
-                              decoration: InputDecoration(
-                                hintText: 'Cari diskusi atau komunitas...',
-                                prefixIcon: const Icon(Icons.search, color: Color(0xFF0D631B)),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: const Icon(Icons.clear),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          _fetchCommunities();
-                                        },
-                                      )
-                                    : null,
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          // Create Button
-                          GestureDetector(
-                            onTap: _onCreateCommunity,
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: const Color(0xFF0D631B), width: 2),
-                              ),
-                              child: Row(
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      hintText: 'Cari komunitas kesehatan...',
+                      hintStyle: const TextStyle(color: Color(0xFF8FA89A), fontSize: 13),
+                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF0D631B)),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 18),
+                              onPressed: () {
+                                _searchController.clear();
+                                _fetchCommunities();
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Main List Content
+              Expanded(
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(color: Color(0xFF0D631B)),
+                      )
+                    : _communities.isEmpty
+                        ? Center(
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.add_circle_outline, size: 20, color: Color(0xFF0D631B)),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Buat Komunitas Baru',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF0D631B),
+                                children: [
+                                  Container(
+                                    width: 72,
+                                    height: 72,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFC9E7CA).withOpacity(0.5),
+                                      shape: BoxShape.circle,
                                     ),
+                                    child: const Icon(Icons.diversity_3_rounded, size: 36, color: Color(0xFF0D631B)),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Belum ada komunitas',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF181D17)),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Text(
+                                    'Yuk, mulai buat komunitas kesehatan pertamamu!',
+                                    style: TextStyle(fontSize: 12, color: Color(0xFF4E6952)),
                                   ),
                                 ],
                               ),
                             ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(20),
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: _communities.length,
+                            itemBuilder: (context, index) {
+                              return _buildCommunityCard(_communities[index]);
+                            },
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      if (_isLoading)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: CircularProgressIndicator(color: Color(0xFF0D631B)),
-                          ),
-                        )
-                      else if (_communities.isEmpty)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(40.0),
-                            child: Text(
-                              'Belum ada komunitas. Yuk buat yang pertama!',
-                              style: TextStyle(color: Colors.grey, fontSize: 14),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
-                      else
-                        ..._communities.map((community) => _buildCommunityCard(community)),
-                    ],
-                  ),
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCommunityCard(CommunityModel community) {
+    final isOwner = community.createdBy == _currentUserId;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E4DA)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
+        border: Border.all(color: const Color(0xFFE8EFE9)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Community Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: community.coverImageUrl.isNotEmpty
-                    ? Image.network(
-                        community.coverImageUrl,
-                        width: 64,
-                        height: 64,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 64,
-                            height: 64,
-                            color: const Color(0xFFC9E7CA),
-                            child: const Icon(Icons.group, size: 32, color: Color(0xFF0D631B)),
-                          );
-                        },
-                      )
-                    : Container(
-                        width: 64,
-                        height: 64,
-                        color: const Color(0xFFC9E7CA),
-                        child: const Icon(Icons.group, size: 32, color: Color(0xFF0D631B)),
-                      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top Row of Card (Image and Info)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Community Image / Placeholder
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: community.coverImageUrl.isNotEmpty
+                          ? Image.network(
+                              community.coverImageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Color(0xFFC9E7CA), Color(0xFFE8F5E9)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: const Icon(Icons.diversity_3_rounded, size: 32, color: Color(0xFF0D631B)),
+                                );
+                              },
+                            )
+                          : Container(
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xFFC9E7CA), Color(0xFFE8F5E9)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: const Icon(Icons.diversity_3_rounded, size: 32, color: Color(0xFF0D631B)),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Community Main Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                community.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF181D17),
+                                  letterSpacing: -0.3,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            // Role Badge (Owner vs Joined)
+                            if (isOwner)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFF3E0),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.orange),
+                                ),
+                                child: Text(
+                                  'Owner',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.orange.shade800,
+                                  ),
+                                ),
+                              )
+                            else if (community.isMember)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE8F5E9),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: const Color(0xFFC9E7CA)),
+                                ),
+                                child: const Text(
+                                  'Joined',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF0D631B),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        // Location and Members
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5EB),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.location_on_outlined, size: 10, color: Color(0xFF4E6952)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    community.location ?? 'Publik',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF4E6952),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5EB),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.group_outlined, size: 10, color: Color(0xFF4E6952)),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${_formatNumber(community.memberCount)} Anggota',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF4E6952),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              // Community Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            community.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF181D17),
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFC9E7CA),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            community.location ?? 'Publik',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF4E6952),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.group, size: 14, color: Color(0xFF4E6952)),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${_formatNumber(community.memberCount)} Anggota',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xFF4E6952),
-                          ),
-                        ),
-                        if (community.isMember) ...[
-                          const SizedBox(width: 8),
-                          const Icon(Icons.check_circle, size: 14, color: Color(0xFF0D631B)),
-                          const SizedBox(width: 2),
-                          const Text(
-                            'Joined',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF0D631B),
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                  ],
+            ),
+            // Description paragraph
+            if (community.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Text(
+                  community.description,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF40493D),
+                    height: 1.5,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Description
-          Text(
-            community.description,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF40493D),
-              height: 1.4,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 16),
-          const SizedBox(height: 16),
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => _onViewCommunity(community),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEBEFE5),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Center(
-                      child: Text(
+            // Bottom Action Row
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              color: const Color(0xFFF7FBF0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFF0D631B), width: 1.5),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () => _onViewCommunity(community),
+                      child: const Text(
                         'Detail',
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
                           color: Color(0xFF0D631B),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    if (community.isMember) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChatRoomKomunitas(community: community),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0D631B),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    } else {
-                      _toggleJoinCommunity(community);
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0D631B),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
+                      ),
+                      onPressed: () {
+                        if (community.isMember) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatRoomKomunitas(community: community),
+                            ),
+                          );
+                        } else {
+                          _toggleJoinCommunity(community);
+                        }
+                      },
                       child: Text(
                         community.isMember ? 'Buka Chat' : 'Gabung',
                         style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                ),
+                  if (isOwner) ...[
+                    const SizedBox(width: 8),
+                    // Edit Icon Button
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _showEditCommunityDialog(community),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFFC9E7CA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFF0D631B)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Delete Icon Button
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => _onDeleteCommunity(community),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFFFFCDD2)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFD32F2F)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              if (community.createdBy == _currentUserId) ...[
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => _showEditCommunityDialog(community),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE8F5E9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.edit_outlined, size: 18, color: Color(0xFF0D631B)),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => _onDeleteCommunity(community),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFEBEE),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.delete_outline, size: 18, color: Color(0xFFBA1A1A)),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
