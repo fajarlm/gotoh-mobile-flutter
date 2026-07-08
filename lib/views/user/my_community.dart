@@ -59,15 +59,53 @@ class _CommunityListPageState extends State<CommunityListPage> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Keluar Komunitas'),
-          content: Text('Yakin ingin keluar dari komunitas "${community.name}"?'),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: const Text(
+            'Keluar Komunitas',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1B3C21),
+            ),
+          ),
+          content: Text(
+            'Yakin ingin keluar dari komunitas "${community.name}"?',
+            style: const TextStyle(
+              color: Color(0xFF6B8B72),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text(
+                'Batal',
+                style: TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBA1A1A)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFBA1A1A),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+              ),
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Keluar', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Keluar',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
@@ -88,11 +126,17 @@ class _CommunityListPageState extends State<CommunityListPage> {
           }
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Anda telah keluar dari ${community.name}'), backgroundColor: const Color(0xFF0D631B)),
+          SnackBar(
+            content: Text('Anda telah keluar dari ${community.name}'),
+            backgroundColor: const Color(0xFF0D631B),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal keluar dari komunitas'), backgroundColor: Color(0xFFBA1A1A)),
+          const SnackBar(
+            content: Text('Gagal keluar dari komunitas'),
+            backgroundColor: Color(0xFFBA1A1A),
+          ),
         );
       }
     } else {
@@ -108,11 +152,17 @@ class _CommunityListPageState extends State<CommunityListPage> {
           }
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selamat! Anda bergabung dengan ${community.name}'), backgroundColor: const Color(0xFF0D631B)),
+          SnackBar(
+            content: Text('Selamat! Anda bergabung dengan ${community.name}'),
+            backgroundColor: const Color(0xFF0D631B),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal bergabung dengan komunitas'), backgroundColor: Color(0xFFBA1A1A)),
+          const SnackBar(
+            content: Text('Gagal bergabung dengan komunitas'),
+            backgroundColor: Color(0xFFBA1A1A),
+          ),
         );
       }
     }
@@ -146,10 +196,16 @@ class _CommunityListPageState extends State<CommunityListPage> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: const Text(
             'Buat Komunitas Baru',
-            style: TextStyle(color: Color(0xFF1B3C21), fontWeight: FontWeight.w800, fontSize: 18),
+            style: TextStyle(
+              color: Color(0xFF1B3C21),
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+            ),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -157,42 +213,81 @@ class _CommunityListPageState extends State<CommunityListPage> {
               children: [
                 TextField(
                   controller: nameController,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1B3C21),
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Nama Komunitas',
-                    labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                    labelStyle: const TextStyle(
+                      color: Color(0xFF6B8B72),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: descController,
                   maxLines: 3,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1B3C21),
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Deskripsi',
                     hintText: 'Minimal 10 karakter',
-                    hintStyle: const TextStyle(color: Color(0xFF8FA89A), fontSize: 12),
-                    labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                    hintStyle: const TextStyle(
+                      color: Color(0xFF8FA89A),
+                      fontSize: 12,
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Color(0xFF6B8B72),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: locController,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1B3C21),
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Lokasi (Opsional)',
                     hintText: 'Contoh: Jakarta',
-                    hintStyle: const TextStyle(color: Color(0xFF8FA89A), fontSize: 12),
-                    labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                    hintStyle: const TextStyle(
+                      color: Color(0xFF8FA89A),
+                      fontSize: 12,
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Color(0xFF6B8B72),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ],
@@ -201,13 +296,21 @@ class _CommunityListPageState extends State<CommunityListPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal', style: TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Batal',
+                style: TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0D631B),
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 elevation: 0,
               ),
               onPressed: () async {
@@ -223,7 +326,9 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 }
                 if (desc.length < 10) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Deskripsi minimal 10 karakter')),
+                    const SnackBar(
+                      content: Text('Deskripsi minimal 10 karakter'),
+                    ),
                   );
                   return;
                 }
@@ -242,11 +347,18 @@ class _CommunityListPageState extends State<CommunityListPage> {
                   _fetchCommunities();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(res['message'] ?? 'Gagal membuat komunitas')),
+                    SnackBar(
+                      content: Text(
+                        res['message'] ?? 'Gagal membuat komunitas',
+                      ),
+                    ),
                   );
                 }
               },
-              child: const Text('Buat', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Buat',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -269,19 +381,45 @@ class _CommunityListPageState extends State<CommunityListPage> {
       builder: (_) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Hapus Komunitas', style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFFBA1A1A))),
-        content: Text('Yakin hapus komunitas "${community.name}"? Aksi ini tidak bisa dibatalkan.'),
+        title: const Text(
+          'Hapus Komunitas',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: Color(0xFFBA1A1A),
+          ),
+        ),
+        content: Text(
+          'Yakin hapus komunitas "${community.name}"? Aksi ini tidak bisa dibatalkan.',
+          style: const TextStyle(
+            color: Color(0xFF6B8B72),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal', style: TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold))),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: Color(0xFF6B8B72),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFBA1A1A),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
               elevation: 0,
             ),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Hapus', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Hapus',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -292,11 +430,17 @@ class _CommunityListPageState extends State<CommunityListPage> {
     if (ok) {
       setState(() => _communities.removeWhere((c) => c.id == community.id));
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Komunitas berhasil dihapus'), backgroundColor: Color(0xFF0D631B)),
+        const SnackBar(
+          content: Text('Komunitas berhasil dihapus'),
+          backgroundColor: Color(0xFF0D631B),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal menghapus komunitas'), backgroundColor: Color(0xFFBA1A1A)),
+        const SnackBar(
+          content: Text('Gagal menghapus komunitas'),
+          backgroundColor: Color(0xFFBA1A1A),
+        ),
       );
     }
   }
@@ -311,57 +455,108 @@ class _CommunityListPageState extends State<CommunityListPage> {
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Edit Komunitas', style: TextStyle(color: Color(0xFF1B3C21), fontWeight: FontWeight.w800, fontSize: 18)),
+        title: const Text(
+          'Edit Komunitas',
+          style: TextStyle(
+            color: Color(0xFF1B3C21),
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+          ),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameCtrl,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B3C21),
+                ),
                 decoration: InputDecoration(
                   labelText: 'Nama Komunitas',
-                  labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                  labelStyle: const TextStyle(
+                    color: Color(0xFF6B8B72),
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                   filled: true,
                   fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: descCtrl,
                 maxLines: 3,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B3C21),
+                ),
                 decoration: InputDecoration(
                   labelText: 'Deskripsi',
-                  labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                  labelStyle: const TextStyle(
+                    color: Color(0xFF6B8B72),
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                   filled: true,
                   fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: locCtrl,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF1A2218)),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B3C21),
+                ),
                 decoration: InputDecoration(
                   labelText: 'Lokasi',
-                  labelStyle: const TextStyle(color: Color(0xFF6B8B72), fontSize: 13, fontWeight: FontWeight.bold),
+                  labelStyle: const TextStyle(
+                    color: Color(0xFF6B8B72),
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
                   filled: true,
                   fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal', style: TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold))),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: Color(0xFF6B8B72),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0D631B),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
               elevation: 0,
             ),
             onPressed: () async {
@@ -369,11 +564,17 @@ class _CommunityListPageState extends State<CommunityListPage> {
               final desc = descCtrl.text.trim();
               final loc = locCtrl.text.trim();
               if (name.length < 3) {
-                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Nama minimal 3 karakter')));
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(content: Text('Nama minimal 3 karakter')),
+                );
                 return;
               }
               if (desc.length < 10) {
-                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Deskripsi minimal 10 karakter')));
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(
+                    content: Text('Deskripsi minimal 10 karakter'),
+                  ),
+                );
                 return;
               }
               Navigator.pop(ctx);
@@ -387,15 +588,24 @@ class _CommunityListPageState extends State<CommunityListPage> {
               if (res['success'] == true) {
                 _fetchCommunities();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Komunitas berhasil diperbarui'), backgroundColor: Color(0xFF0D631B)),
+                  const SnackBar(
+                    content: Text('Komunitas berhasil diperbarui'),
+                    backgroundColor: Color(0xFF0D631B),
+                  ),
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(res['message'] ?? 'Gagal memperbarui'), backgroundColor: const Color(0xFFBA1A1A)),
+                  SnackBar(
+                    content: Text(res['message'] ?? 'Gagal memperbarui'),
+                    backgroundColor: const Color(0xFFBA1A1A),
+                  ),
                 );
               }
             },
-            child: const Text('Simpan', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Simpan',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -418,7 +628,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF0D631B), Color(0xFF1E822E), Color(0xFF38B04D)],
+                    colors: [
+                      Color(0xFF0D631B),
+                      Color(0xFF1E822E),
+                      Color(0xFF38B04D),
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -443,7 +657,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(Icons.health_and_safety_rounded, color: Colors.white, size: 18),
+                              child: const Icon(
+                                Icons.health_and_safety_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                             ),
                             const SizedBox(width: 8),
                             const Text(
@@ -463,14 +681,22 @@ class _CommunityListPageState extends State<CommunityListPage> {
                           icon: const Icon(Icons.add_rounded, size: 16),
                           label: const Text(
                             'Buat',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white.withOpacity(0.2),
                             foregroundColor: Colors.white,
                             elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                           ),
                         ),
                       ],
@@ -517,11 +743,22 @@ class _CommunityListPageState extends State<CommunityListPage> {
                   child: TextField(
                     controller: _searchController,
                     onChanged: _onSearchChanged,
-                    style: const TextStyle(fontSize: 14, color: Color(0xFF1A2218), fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF1A2218),
+                      fontWeight: FontWeight.w500,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Cari komunitas kesehatan...',
-                      hintStyle: const TextStyle(color: Color(0xFF8FA89A), fontSize: 13, fontWeight: FontWeight.w500),
-                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF0D631B)),
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF8FA89A),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: Color(0xFF0D631B),
+                      ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear, size: 18),
@@ -532,7 +769,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             )
                           : null,
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -542,46 +782,61 @@ class _CommunityListPageState extends State<CommunityListPage> {
               Expanded(
                 child: _isLoading
                     ? const Center(
-                        child: CircularProgressIndicator(color: Color(0xFF0D631B)),
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF0D631B),
+                        ),
                       )
                     : _communities.isEmpty
-                        ? Center(
-                            child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 72,
-                                    height: 72,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFC9E7CA).withOpacity(0.3),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(Icons.diversity_3_rounded, size: 36, color: Color(0xFF0D631B)),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  const Text(
-                                    'Belum ada komunitas',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF181D17)),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    'Yuk, mulai buat komunitas kesehatan pertamamu!',
-                                    style: TextStyle(fontSize: 12, color: Color(0xFF4E6952)),
-                                  ),
-                                ],
+                    ? Center(
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 72,
+                                height: 72,
+                                decoration: BoxDecoration(
+                                  color: const Color(
+                                    0xFFC9E7CA,
+                                  ).withOpacity(0.3),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.diversity_3_rounded,
+                                  size: 36,
+                                  color: Color(0xFF0D631B),
+                                ),
                               ),
-                            ),
-                          )
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(20),
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: _communities.length,
-                            itemBuilder: (context, index) {
-                              return _buildCommunityCard(_communities[index]);
-                            },
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Belum ada komunitas',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF181D17),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              const Text(
+                                'Yuk, mulai buat komunitas kesehatan pertamamu!',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF4E6952),
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(20),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: _communities.length,
+                        itemBuilder: (context, index) {
+                          return _buildCommunityCard(_communities[index]);
+                        },
+                      ),
               ),
             ],
           ),
@@ -641,24 +896,38 @@ class _CommunityListPageState extends State<CommunityListPage> {
                                 return Container(
                                   decoration: const BoxDecoration(
                                     gradient: LinearGradient(
-                                      colors: [Color(0xFFC9E7CA), Color(0xFFE8F5E9)],
+                                      colors: [
+                                        Color(0xFFC9E7CA),
+                                        Color(0xFFE8F5E9),
+                                      ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                     ),
                                   ),
-                                  child: const Icon(Icons.diversity_3_rounded, size: 32, color: Color(0xFF0D631B)),
+                                  child: const Icon(
+                                    Icons.diversity_3_rounded,
+                                    size: 32,
+                                    color: Color(0xFF0D631B),
+                                  ),
                                 );
                               },
                             )
                           : Container(
                               decoration: const BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Color(0xFFC9E7CA), Color(0xFFE8F5E9)],
+                                  colors: [
+                                    Color(0xFFC9E7CA),
+                                    Color(0xFFE8F5E9),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                               ),
-                              child: const Icon(Icons.diversity_3_rounded, size: 32, color: Color(0xFF0D631B)),
+                              child: const Icon(
+                                Icons.diversity_3_rounded,
+                                size: 32,
+                                color: Color(0xFF0D631B),
+                              ),
                             ),
                     ),
                   ),
@@ -688,11 +957,16 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             // Role Badge (Owner vs Joined)
                             if (isOwner)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFFFF3E0),
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.orange.shade300),
+                                  border: Border.all(
+                                    color: Colors.orange.shade300,
+                                  ),
                                 ),
                                 child: Text(
                                   'Owner',
@@ -705,11 +979,16 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               )
                             else if (community.isMember)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFE8F5E9),
                                   borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: const Color(0xFFC9E7CA)),
+                                  border: Border.all(
+                                    color: const Color(0xFFC9E7CA),
+                                  ),
                                 ),
                                 child: const Text(
                                   'Joined',
@@ -727,7 +1006,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF4F8F4),
                                 borderRadius: BorderRadius.circular(8),
@@ -735,7 +1017,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.location_on_outlined, size: 11, color: Color(0xFF6B8B72)),
+                                  const Icon(
+                                    Icons.location_on_outlined,
+                                    size: 11,
+                                    color: Color(0xFF6B8B72),
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     community.location ?? 'Publik',
@@ -750,7 +1036,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF4F8F4),
                                 borderRadius: BorderRadius.circular(8),
@@ -758,7 +1047,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.group_outlined, size: 11, color: Color(0xFF6B8B72)),
+                                  const Icon(
+                                    Icons.group_outlined,
+                                    size: 11,
+                                    color: Color(0xFF6B8B72),
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     '${_formatNumber(community.memberCount)} Anggota',
@@ -807,7 +1100,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                   Expanded(
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF0D631B), width: 1.5),
+                        side: const BorderSide(
+                          color: Color(0xFF0D631B),
+                          width: 1.5,
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -841,7 +1137,8 @@ class _CommunityListPageState extends State<CommunityListPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChatRoomKomunitas(community: community),
+                              builder: (context) =>
+                                  ChatRoomKomunitas(community: community),
                             ),
                           );
                         } else {
@@ -871,7 +1168,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             border: Border.all(color: const Color(0xFFC9E7CA)),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.edit_outlined, size: 16, color: Color(0xFF0D631B)),
+                          child: const Icon(
+                            Icons.edit_outlined,
+                            size: 16,
+                            color: Color(0xFF0D631B),
+                          ),
                         ),
                       ),
                     ),
@@ -888,7 +1189,11 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             border: Border.all(color: const Color(0xFFFFCDD2)),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFD32F2F)),
+                          child: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 16,
+                            color: Color(0xFFD32F2F),
+                          ),
                         ),
                       ),
                     ),
