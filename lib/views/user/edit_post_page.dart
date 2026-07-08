@@ -377,13 +377,6 @@ class _EditPostPageState extends State<EditPostPage>
             color: _cardColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: _borderColor),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: TextField(
@@ -579,13 +572,6 @@ class _EditPostPageState extends State<EditPostPage>
           color: _cardColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: _borderColor, style: BorderStyle.solid),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -647,15 +633,6 @@ class _EditPostPageState extends State<EditPostPage>
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
-            boxShadow: _isSubmitting
-                ? []
-                : [
-                    BoxShadow(
-                      color: _primaryGreen.withOpacity(0.4),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
           ),
           child: Center(
             child: _isSubmitting
@@ -710,8 +687,8 @@ class _TypeCard extends StatelessWidget {
 
   static const _primaryGreen = Color(0xFF0D631B);
   static const _lightGreen = Color(0xFFE8F5E9);
-  static const _textDark = Color(0xFF1A2218);
-  static const _textLight = Color(0xFF8FA89A);
+  static const _textDark = Color(0xFF1B3C21);
+  static const _textLight = Color(0xFF6B8B72);
 
   @override
   Widget build(BuildContext context) {
@@ -727,15 +704,6 @@ class _TypeCard extends StatelessWidget {
             color: selected ? _primaryGreen : const Color(0xFFE0E4DA),
             width: selected ? 2 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: selected
-                  ? _primaryGreen.withOpacity(0.12)
-                  : Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -924,13 +892,6 @@ class _SourceOption extends StatelessWidget {
               decoration: BoxDecoration(
                 color: _primaryGreen,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: _primaryGreen.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
               ),
               child: Icon(icon, color: Colors.white, size: 24),
             ),
