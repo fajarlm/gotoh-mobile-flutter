@@ -67,7 +67,11 @@ class _EditProfileState extends State<EditProfile> {
         // Ambil data medical checkup terakhir untuk mendapatkan berat & tinggi badan
         final checkups = await HealthService.getCheckups();
         if (checkups.isNotEmpty) {
-          checkups.sort((a, b) => (b.createdAt ?? DateTime.now()).compareTo(a.createdAt ?? DateTime.now()));
+          checkups.sort(
+            (a, b) => (b.createdAt ?? DateTime.now()).compareTo(
+              a.createdAt ?? DateTime.now(),
+            ),
+          );
           _latestCheckup = checkups.first;
           _weightController.text = _latestCheckup?.weight?.toString() ?? '';
           _heightController.text = _latestCheckup?.height?.toString() ?? '';
@@ -102,7 +106,7 @@ class _EditProfileState extends State<EditProfile> {
 
       if (res['success'] == true) {
         final updatedUser = res['data'] as UserModel;
-        
+
         // Simpan data profil baru ke SharedPreferences agar sinkron di seluruh halaman
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('username', updatedUser.username);
@@ -116,10 +120,9 @@ class _EditProfileState extends State<EditProfile> {
         final newHeight = double.tryParse(_heightController.text.trim());
 
         if (newWeight != null || newHeight != null) {
-          if (_latestCheckup == null || 
-              _latestCheckup!.weight != newWeight || 
+          if (_latestCheckup == null ||
+              _latestCheckup!.weight != newWeight ||
               _latestCheckup!.height != newHeight) {
-            
             await HealthService.createCheckup(
               weight: newWeight,
               height: newHeight,
@@ -175,18 +178,48 @@ class _EditProfileState extends State<EditProfile> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Hapus Akun'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text(
+          'Hapus Akun',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1B3C21),
+          ),
+        ),
         content: const Text(
           'Apakah Anda yakin ingin menghapus akun Anda secara permanen? Tindakan ini tidak dapat dibatalkan.',
+          style: TextStyle(
+            color: Color(0xFF6B8B72),
+            fontWeight: FontWeight.w500,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+            child: const Text(
+              'Batal',
+              style: TextStyle(
+                color: Color(0xFF6B8B72),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Hapus', style: TextStyle(color: Color(0xFFBA1A1A))),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFBA1A1A),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            child: const Text(
+              'Hapus',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -274,7 +307,10 @@ class _EditProfileState extends State<EditProfile> {
                             decoration: ShapeDecoration(
                               color: Colors.white,
                               shape: RoundedRectangleBorder(
-                                side: const BorderSide(width: 4, color: Colors.white),
+                                side: const BorderSide(
+                                  width: 4,
+                                  color: Colors.white,
+                                ),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               shadows: [
@@ -298,7 +334,10 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           const SizedBox(height: 12),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE8F5E9),
                               borderRadius: BorderRadius.circular(30),
@@ -328,13 +367,6 @@ class _EditProfileState extends State<EditProfile> {
                           borderRadius: BorderRadius.circular(24),
                           side: const BorderSide(color: Color(0xFFE2EFE0)),
                         ),
-                        shadows: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          )
-                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,21 +384,28 @@ class _EditProfileState extends State<EditProfile> {
                           TextFormField(
                             controller: _usernameController,
                             style: const TextStyle(
-                              color: Color(0xFF1A2218),
+                              color: Color(0xFF1B3C21),
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(
+                                Icons.person_outline_rounded,
+                                color: Color(0xFF0D631B),
+                              ),
                               filled: true,
                               fillColor: const Color(0xFFF4F8F4),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            validator: (val) => val == null || val.trim().isEmpty
+                            validator: (val) =>
+                                val == null || val.trim().isEmpty
                                 ? 'Nama tidak boleh kosong'
                                 : null,
                           ),
@@ -386,23 +425,32 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(
-                              color: Color(0xFF1A2218),
+                              color: Color(0xFF1B3C21),
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(
+                                Icons.email_outlined,
+                                color: Color(0xFF0D631B),
+                              ),
                               filled: true,
                               fillColor: const Color(0xFFF4F8F4),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
                               ),
                             ),
                             validator: (val) {
-                              if (val == null || val.trim().isEmpty) return 'Email tidak boleh kosong';
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(val.trim())) {
+                              if (val == null || val.trim().isEmpty)
+                                return 'Email tidak boleh kosong';
+                              if (!RegExp(
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(val.trim())) {
                                 return 'Format email tidak valid';
                               }
                               return null;
@@ -424,17 +472,26 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _weightController,
                             keyboardType: TextInputType.number,
                             style: const TextStyle(
-                              color: Color(0xFF1A2218),
+                              color: Color(0xFF1B3C21),
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.scale_outlined, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(
+                                Icons.scale_outlined,
+                                color: Color(0xFF0D631B),
+                              ),
                               suffixText: 'kg',
-                              suffixStyle: const TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold),
+                              suffixStyle: const TextStyle(
+                                color: Color(0xFF6B8B72),
+                                fontWeight: FontWeight.bold,
+                              ),
                               filled: true,
                               fillColor: const Color(0xFFF4F8F4),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
@@ -457,17 +514,26 @@ class _EditProfileState extends State<EditProfile> {
                             controller: _heightController,
                             keyboardType: TextInputType.number,
                             style: const TextStyle(
-                              color: Color(0xFF1A2218),
+                              color: Color(0xFF1B3C21),
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.height_rounded, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(
+                                Icons.height_rounded,
+                                color: Color(0xFF0D631B),
+                              ),
                               suffixText: 'cm',
-                              suffixStyle: const TextStyle(color: Color(0xFF6B8B72), fontWeight: FontWeight.bold),
+                              suffixStyle: const TextStyle(
+                                color: Color(0xFF6B8B72),
+                                fontWeight: FontWeight.bold,
+                              ),
                               filled: true,
                               fillColor: const Color(0xFFF4F8F4),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
@@ -494,10 +560,16 @@ class _EditProfileState extends State<EditProfile> {
                               });
                             },
                             decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.track_changes_rounded, color: Color(0xFF0D631B)),
+                              prefixIcon: const Icon(
+                                Icons.track_changes_rounded,
+                                color: Color(0xFF0D631B),
+                              ),
                               filled: true,
                               fillColor: const Color(0xFFF4F8F4),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
@@ -509,7 +581,7 @@ class _EditProfileState extends State<EditProfile> {
                                 child: Text(
                                   item['label']!,
                                   style: const TextStyle(
-                                    color: Color(0xFF1A2218),
+                                    color: Color(0xFF1B3C21),
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -529,13 +601,17 @@ class _EditProfileState extends State<EditProfile> {
                             child: Row(
                               children: [
                                 Icon(
-                                  _showPasswordInput ? Icons.keyboard_arrow_up : Icons.lock_outline_rounded,
+                                  _showPasswordInput
+                                      ? Icons.keyboard_arrow_up
+                                      : Icons.lock_outline_rounded,
                                   color: const Color(0xFF0D631B),
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  _showPasswordInput ? 'Batal Ubah Kata Sandi' : 'Ubah Kata Sandi',
+                                  _showPasswordInput
+                                      ? 'Batal Ubah Kata Sandi'
+                                      : 'Ubah Kata Sandi',
                                   style: const TextStyle(
                                     color: Color(0xFF0D631B),
                                     fontSize: 13,
@@ -561,22 +637,29 @@ class _EditProfileState extends State<EditProfile> {
                               controller: _passwordController,
                               obscureText: true,
                               style: const TextStyle(
-                                color: Color(0xFF1A2218),
+                                color: Color(0xFF1B3C21),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                               ),
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFF0D631B)),
+                                prefixIcon: const Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: Color(0xFF0D631B),
+                                ),
                                 filled: true,
                                 fillColor: const Color(0xFFF4F8F4),
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
                               validator: (val) {
-                                if (_showPasswordInput && (val == null || val.length < 6)) {
+                                if (_showPasswordInput &&
+                                    (val == null || val.length < 6)) {
                                   return 'Kata sandi minimal 6 karakter';
                                 }
                                 return null;
@@ -592,7 +675,9 @@ class _EditProfileState extends State<EditProfile> {
                     _isLoading
                         ? const Center(
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0D631B)),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF0D631B),
+                              ),
                             ),
                           )
                         : Column(
@@ -606,10 +691,9 @@ class _EditProfileState extends State<EditProfile> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF0D631B),
                                     foregroundColor: Colors.white,
-                                    elevation: 4,
-                                    shadowColor: const Color(0xFF0D631B).withOpacity(0.3),
+                                    elevation: 0,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
                                   ),
                                   child: const Text(
@@ -631,9 +715,12 @@ class _EditProfileState extends State<EditProfile> {
                                   onPressed: _confirmDeleteAccount,
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: const Color(0xFFBA1A1A),
-                                    side: const BorderSide(color: Color(0xFFBA1A1A), width: 1.5),
+                                    side: const BorderSide(
+                                      color: Color(0xFFBA1A1A),
+                                      width: 1.5,
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
                                   ),
                                   child: const Text(
