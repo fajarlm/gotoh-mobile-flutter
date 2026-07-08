@@ -70,20 +70,38 @@ class _PostDetailPageState extends State<PostDetailPage> {
     // Tampilkan loading spinner saat data belum siap
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: Color(0xFFF7FBF0),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF0D631B))),
+        backgroundColor: Color(0xFFFAFDF9),
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFF0D631B)),
+        ),
       );
     }
     // Post tidak ditemukan
     if (_post == null) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF7FBF0),
+        backgroundColor: const Color(0xFFFAFDF9),
         appBar: AppBar(
-          backgroundColor: const Color(0xFFF7FBF0),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
           elevation: 0,
-          leading: const BackButton(color: Color(0xFF0D631B)),
+          leading: const BackButton(color: Colors.white),
         ),
-        body: const Center(child: Text('Post tidak ditemukan')),
+        body: const Center(
+          child: Text(
+            'Post tidak ditemukan',
+            style: TextStyle(
+              color: Color(0xFF6B8B72),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       );
     }
 
@@ -91,14 +109,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
     final user = post.user;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFFAFDF9),
       appBar: AppBar(
-        backgroundColor: const Color(0xCCECFDF5),
-        elevation: 1,
-        leading: const BackButton(color: Color(0xFF0D631B)),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        elevation: 0,
+        leading: const BackButton(color: Colors.white),
         title: const Text(
           'Postingan',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF064E3B)),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+          ),
         ),
         centerTitle: false,
       ),
@@ -116,10 +146,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(color: const Color(0x0A000000), blurRadius: 12, offset: const Offset(0, 4)),
-                      ],
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: const Color(0xFFE2EFE0)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,13 +157,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           children: [
                             CircleAvatar(
                               radius: 24,
-                              backgroundColor: const Color(0xFFEBEFE5),
-                              backgroundImage: (user?.avatarUrl.isNotEmpty == true)
-                                  ? NetworkImage(user!.avatarUrl) as ImageProvider
+                              backgroundColor: const Color(0xFFE8F5E9),
+                              backgroundImage:
+                                  (user?.avatarUrl.isNotEmpty == true)
+                                  ? NetworkImage(user!.avatarUrl)
+                                        as ImageProvider
                                   : null,
                               child: (user == null || user.avatarUrl.isEmpty)
-                                  ? Text(user?.initials ?? '?',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF4E6952)))
+                                  ? Text(
+                                      user?.initials ?? '?',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF0D631B),
+                                      ),
+                                    )
                                   : null,
                             ),
                             const SizedBox(width: 12),
@@ -144,11 +179,22 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               children: [
                                 Text(
                                   user?.username ?? 'Unknown',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF181D17)),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF1B3C21),
+                                  ),
                                 ),
+                                const SizedBox(height: 2),
                                 Text(
-                                  post.createdAt != null ? _formatDate(post.createdAt!) : '',
-                                  style: const TextStyle(fontSize: 12, color: Color(0xFF40493D)),
+                                  post.createdAt != null
+                                      ? _formatDate(post.createdAt!)
+                                      : '',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Color(0xFF6B8B72),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
@@ -157,13 +203,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         const SizedBox(height: 16),
                         // Konten teks
                         if (post.content != null && post.content!.isNotEmpty)
-                          Text(post.content!,
-                              style: const TextStyle(fontSize: 16, height: 1.6, color: Color(0xFF181D17))),
+                          Text(
+                            post.content!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              height: 1.5,
+                              color: Color(0xFF1B3C21),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         // Gambar post
                         if (post.image != null && post.image!.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(16),
                             child: Image.network(
                               post.imageUrl,
                               width: double.infinity,
@@ -171,14 +224,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) => Container(
                                 height: 240,
-                                color: const Color(0xFFE0E4DA),
-                                child: const Icon(Icons.image_not_supported, size: 40, color: Color(0xFF9E9E9E)),
+                                color: const Color(0xFFE2EFE0),
+                                child: const Icon(
+                                  Icons.image_not_supported,
+                                  size: 40,
+                                  color: Color(0xFF6B8B72),
+                                ),
                               ),
                             ),
                           ),
                         ],
                         const SizedBox(height: 16),
-                        const Divider(color: Color(0xFFE0E4DA)),
+                        const Divider(color: Color(0xFFE2EFE0)),
                         const SizedBox(height: 8),
                         // Aksi like & komentar
                         Row(
@@ -188,21 +245,41 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               child: Row(
                                 children: [
                                   Icon(
-                                    post.isLiked ? Icons.favorite : Icons.favorite_border,
+                                    post.isLiked
+                                        ? Icons.favorite_rounded
+                                        : Icons.favorite_border_rounded,
                                     size: 22,
-                                    color: post.isLiked ? const Color(0xFFBA1A1A) : const Color(0xFF707A6C),
+                                    color: post.isLiked
+                                        ? const Color(0xFFBA1A1A)
+                                        : const Color(0xFF6B8B72),
                                   ),
-                                  const SizedBox(width: 4),
-                                  Text('${post.likeCount}',
-                                      style: const TextStyle(fontSize: 14, color: Color(0xFF707A6C))),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    '${post.likeCount}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF6B8B72),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 20),
-                            const Icon(Icons.chat_bubble_outline, size: 22, color: Color(0xFF707A6C)),
-                            const SizedBox(width: 4),
-                            Text('${_comments.length}',
-                                style: const TextStyle(fontSize: 14, color: Color(0xFF707A6C))),
+                            const SizedBox(width: 24),
+                            const Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 22,
+                              color: Color(0xFF6B8B72),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${_comments.length}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF6B8B72),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -210,15 +287,27 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ),
                   const SizedBox(height: 24),
                   // ── Section Komentar ────────────────────────────────────
-                  const Text('Komentar',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xFF181D17))),
+                  const Text(
+                    'Komentar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1B3C21),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   ..._comments.map(_buildCommentCard),
                   if (_comments.isEmpty)
                     const Center(
                       child: Padding(
                         padding: EdgeInsets.all(24),
-                        child: Text('Belum ada komentar', style: TextStyle(color: Color(0xFF707A6C))),
+                        child: Text(
+                          'Belum ada komentar',
+                          style: TextStyle(
+                            color: Color(0xFF6B8B72),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                 ],
@@ -228,30 +317,77 @@ class _PostDetailPageState extends State<PostDetailPage> {
           // ── Input komentar ──────────────────────────────────────────────
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: const Border(top: BorderSide(color: Color(0xFFE2EFE0))),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 10,
+                  offset: const Offset(0, -3),
+                ),
+              ],
+            ),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _commentController,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF1B3C21),
+                      fontWeight: FontWeight.w500,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Tulis komentar...',
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF8FA89A),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                       filled: true,
-                      fillColor: const Color(0xFFF7FBF0),
+                      fillColor: const Color(0xFFF4F8F4),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: const BorderSide(color: Color(0xFFE2EFE0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: const BorderSide(color: Color(0xFFE2EFE0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: const BorderSide(color: Color(0xFF0D631B)),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 GestureDetector(
                   onTap: _submitComment,
                   child: Container(
                     width: 42,
                     height: 42,
-                    decoration: const BoxDecoration(color: Color(0xFF0D631B), shape: BoxShape.circle),
-                    child: const Icon(Icons.send, color: Colors.white, size: 20),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0D631B),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF0D631B).withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.send_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
@@ -269,21 +405,27 @@ class _PostDetailPageState extends State<PostDetailPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: const Color(0x05000000), blurRadius: 12, offset: const Offset(0, 4))],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: const Color(0xFFEBEFE5),
+            backgroundColor: const Color(0xFFE8F5E9),
             backgroundImage: (c.user?.avatarUrl.isNotEmpty == true)
                 ? NetworkImage(c.user!.avatarUrl) as ImageProvider
                 : null,
             child: (c.user == null || c.user!.avatarUrl.isEmpty)
-                ? Text(c.user?.initials ?? '?',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF4E6952)))
+                ? Text(
+                    c.user?.initials ?? '?',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0D631B),
+                    ),
+                  )
                 : null,
           ),
           const SizedBox(width: 12),
@@ -294,17 +436,34 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(c.user?.username ?? 'Unknown',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFF181D17))),
+                    Text(
+                      c.user?.username ?? 'Unknown',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1B3C21),
+                      ),
+                    ),
                     Text(
                       c.createdAt != null ? _formatDate(c.createdAt!) : '',
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF40493D)),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color(0xFF6B8B72),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(c.content,
-                    style: const TextStyle(fontSize: 14, color: Color(0xFF40493D), height: 1.5)),
+                Text(
+                  c.content,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF6B8B72),
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
           ),
