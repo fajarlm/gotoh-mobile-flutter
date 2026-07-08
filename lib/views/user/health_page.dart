@@ -94,9 +94,17 @@ class _HealthPageState extends State<HealthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFFAFDF9),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D631B),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         elevation: 0,
         leading: Navigator.canPop(context) ? const BackButton(color: Colors.white) : null,
         title: const Text(
@@ -111,7 +119,7 @@ class _HealthPageState extends State<HealthPage> {
               color: const Color(0xFF0D631B),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(20),
                 child: _latestCheckup == null
                     ? _buildEmptyState()
                     : _buildDashboardState(),
@@ -127,14 +135,21 @@ class _HealthPageState extends State<HealthPage> {
       children: [
         const SizedBox(height: 60),
         Container(
-          padding: const EdgeInsets.all(32),
-          decoration: const BoxDecoration(
-            color: Color(0xFFE8F5E9),
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8F5E9),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0D631B).withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: const Icon(
             Icons.favorite_rounded,
-            size: 100,
+            size: 80,
             color: Color(0xFF0D631B),
           ),
         ),
@@ -143,8 +158,9 @@ class _HealthPageState extends State<HealthPage> {
           'Belum Ada Data Kesehatan',
           style: TextStyle(
             fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF181D17),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.5,
+            color: Color(0xFF1B3C21),
           ),
           textAlign: TextAlign.center,
         ),
@@ -153,7 +169,7 @@ class _HealthPageState extends State<HealthPage> {
           'Catat medical checkup pertama Anda untuk memantau BMI, kondisi vitalitas, dan mendapatkan rekomendasi latihan olahraga terpersonalisasi.',
           style: TextStyle(
             fontSize: 14,
-            color: Color(0xFF40493D),
+            color: Color(0xFF5A7561),
             height: 1.5,
           ),
           textAlign: TextAlign.center,
@@ -165,15 +181,18 @@ class _HealthPageState extends State<HealthPage> {
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0D631B),
+              foregroundColor: Colors.white,
+              elevation: 4,
+              shadowColor: const Color(0xFF0D631B).withOpacity(0.3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             onPressed: _navigateToForm,
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: const Text(
               'Mulai Medical Checkup',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -197,29 +216,30 @@ class _HealthPageState extends State<HealthPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Assessment Terakhir',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF40493D), fontWeight: FontWeight.w500),
+                  'ASSESSMENT TERAKHIR',
+                  style: TextStyle(fontSize: 10, color: Color(0xFF6B8B72), fontWeight: FontWeight.bold, letterSpacing: 1.2),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   _formatDateString(checkup.date),
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF181D17)),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFF1B3C21)),
                 ),
               ],
             ),
             IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
               onPressed: () async {
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Hapus Data?'),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    title: const Text('Hapus Data?', style: TextStyle(fontWeight: FontWeight.bold)),
                     content: const Text('Apakah Anda yakin ingin menghapus data medical checkup terakhir ini?'),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
+                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold))),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('Hapus', style: TextStyle(color: Colors.redAccent)),
+                        child: const Text('Hapus', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -234,20 +254,20 @@ class _HealthPageState extends State<HealthPage> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 18),
 
-        // Score Card
+        // Score Card (BMI Gauge design)
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE0E4DA)),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFFE2EFE0)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.02),
-                blurRadius: 10,
+                blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
             ],
@@ -256,25 +276,27 @@ class _HealthPageState extends State<HealthPage> {
             children: [
               const Text(
                 'Indeks Massa Tubuh (BMI)',
-                style: TextStyle(fontSize: 13, color: Color(0xFF40493D), fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 13, color: Color(0xFF6B8B72), fontWeight: FontWeight.bold, letterSpacing: 0.5),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Text(
                 bmiVal != null ? bmiVal.toStringAsFixed(1) : '-',
-                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: catColor),
+                style: TextStyle(fontSize: 54, fontWeight: FontWeight.w900, color: catColor, letterSpacing: -1),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                 decoration: BoxDecoration(
-                  color: catColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(20),
+                  color: catColor.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: catColor.withOpacity(0.2), width: 1),
                 ),
                 child: Text(
                   checkup.bmiCategory.toUpperCase(),
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.0,
                     color: catColor,
                   ),
                 ),
@@ -293,8 +315,9 @@ class _HealthPageState extends State<HealthPage> {
               child: _buildMetricCard(
                 title: 'Tinggi Badan',
                 value: checkup.height != null ? '${checkup.height} cm' : '-',
-                icon: Icons.height,
+                icon: Icons.height_rounded,
                 color: Colors.teal,
+                bgColor: const Color(0xFFE0F2F1),
               ),
             ),
             const SizedBox(width: 16),
@@ -304,6 +327,7 @@ class _HealthPageState extends State<HealthPage> {
                 value: checkup.weight != null ? '${checkup.weight} kg' : '-',
                 icon: Icons.monitor_weight_outlined,
                 color: Colors.blueAccent,
+                bgColor: const Color(0xFFE3F2FD),
               ),
             ),
           ],
@@ -321,6 +345,7 @@ class _HealthPageState extends State<HealthPage> {
                 value: checkup.bloodPressure ?? '-',
                 icon: Icons.speed_rounded,
                 color: Colors.redAccent,
+                bgColor: const Color(0xFFFFEBEE),
               ),
             ),
             const SizedBox(width: 16),
@@ -330,6 +355,7 @@ class _HealthPageState extends State<HealthPage> {
                 value: checkup.heartRate != null ? '${checkup.heartRate} bpm' : '-',
                 icon: Icons.favorite_border_rounded,
                 color: Colors.pink,
+                bgColor: const Color(0xFFFCE4EC),
               ),
             ),
           ],
@@ -345,8 +371,9 @@ class _HealthPageState extends State<HealthPage> {
               child: _buildMetricCard(
                 title: 'Gula Darah',
                 value: checkup.bloodSugar != null ? '${checkup.bloodSugar} mg/dL' : '-',
-                icon: Icons.bloodtype,
+                icon: Icons.bloodtype_rounded,
                 color: Colors.orange,
+                bgColor: const Color(0xFFFFF3E0),
               ),
             ),
             const SizedBox(width: 16),
@@ -354,8 +381,9 @@ class _HealthPageState extends State<HealthPage> {
               child: _buildMetricCard(
                 title: 'Kolesterol',
                 value: checkup.cholesterol != null ? '${checkup.cholesterol} mg/dL' : '-',
-                icon: Icons.health_and_safety,
+                icon: Icons.health_and_safety_rounded,
                 color: Colors.purple,
+                bgColor: const Color(0xFFF3E5F5),
               ),
             ),
           ],
@@ -368,14 +396,15 @@ class _HealthPageState extends State<HealthPage> {
         _recommendations.isEmpty
             ? Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5EB),
-                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFE2EFE0)),
                 ),
                 child: const Text(
                   'Memuat rekomendasi...',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  style: TextStyle(color: Color(0xFF6B8B72), fontSize: 14, fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
               )
@@ -390,15 +419,18 @@ class _HealthPageState extends State<HealthPage> {
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF0D631B),
+              foregroundColor: Colors.white,
+              elevation: 4,
+              shadowColor: const Color(0xFF0D631B).withOpacity(0.3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             onPressed: _navigateToForm,
-            icon: const Icon(Icons.add, color: Colors.white),
+            icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: const Text(
               'Input Assessment Baru',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -411,9 +443,9 @@ class _HealthPageState extends State<HealthPage> {
     return Text(
       title,
       style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF181D17),
+        fontSize: 15,
+        fontWeight: FontWeight.w800,
+        color: Color(0xFF1B3C21),
       ),
     );
   }
@@ -423,35 +455,50 @@ class _HealthPageState extends State<HealthPage> {
     required String value,
     required IconData icon,
     required Color color,
+    required Color bgColor,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E4DA)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.01),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 20),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF40493D), fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF6B8B72), fontWeight: FontWeight.bold),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Text(
             value,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF181D17)),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF1B3C21), letterSpacing: -0.2),
           ),
         ],
       ),
@@ -465,12 +512,12 @@ class _HealthPageState extends State<HealthPage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E4DA)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.01),
-            blurRadius: 8,
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
@@ -482,39 +529,47 @@ class _HealthPageState extends State<HealthPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                children: const [
-                  Icon(Icons.fitness_center_rounded, color: Color(0xFF0D631B), size: 22),
-                  SizedBox(width: 8),
-                  Text(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE8F5E9),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.fitness_center_rounded, color: Color(0xFF0D631B), size: 18),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
                     'Program Latihan',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0D631B)),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF0D631B)),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F5E9),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  'Durasi: ${rec.duration} menit',
+                  '${rec.duration} mnt',
                   style: const TextStyle(
                     fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                     color: Color(0xFF0D631B),
                   ),
                 ),
               ),
             ],
           ),
-          const Divider(height: 24, color: Color(0xFFE0E4DA)),
+          const Divider(height: 24, color: Color(0xFFE2EFE0)),
           Text(
             rec.recommendation,
             style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF40493D),
-              height: 1.5,
+              fontSize: 13,
+              color: Color(0xFF5A7561),
+              height: 1.55,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
