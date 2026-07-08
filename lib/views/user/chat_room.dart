@@ -46,7 +46,9 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
     _currentUsername = prefs.getString('username') ?? 'User';
 
     // 1. Ambil data pesan historis via HTTP
-    final historical = await CommunityService.getChatMessages(widget.community.id);
+    final historical = await CommunityService.getChatMessages(
+      widget.community.id,
+    );
     setState(() {
       _messages.addAll(historical);
       _isLoading = false;
@@ -133,7 +135,9 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
       _messageController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Koneksi terputus. Silakan coba sesaat lagi.')),
+        const SnackBar(
+          content: Text('Koneksi terputus. Silakan coba sesaat lagi.'),
+        ),
       );
     }
   }
@@ -141,27 +145,49 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFFAFDF9),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D631B),
-        elevation: 1,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: widget.community.coverImageUrl.isNotEmpty
-                  ? NetworkImage(widget.community.coverImageUrl)
-                  : null,
-              backgroundColor: const Color(0xFFC9E7CA),
-              radius: 18,
-              onBackgroundImageError: widget.community.coverImageUrl.isNotEmpty
-                  ? (_, __) {}
-                  : null,
-              child: widget.community.coverImageUrl.isEmpty
-                  ? const Icon(Icons.group, size: 18, color: Color(0xFF0D631B))
-                  : null,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.5),
+                  width: 1.5,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundImage: widget.community.coverImageUrl.isNotEmpty
+                    ? NetworkImage(widget.community.coverImageUrl)
+                    : null,
+                backgroundColor: Colors.white.withOpacity(0.2),
+                radius: 18,
+                onBackgroundImageError:
+                    widget.community.coverImageUrl.isNotEmpty
+                    ? (_, __) {}
+                    : null,
+                child: widget.community.coverImageUrl.isEmpty
+                    ? const Icon(
+                        Icons.diversity_3_rounded,
+                        size: 16,
+                        color: Colors.white,
+                      )
+                    : null,
+              ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,12 +202,27 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    '${_onlineCount > 0 ? _onlineCount : 1} Online',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFFC9E7CA),
-                    ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF81C784),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${_onlineCount > 0 ? _onlineCount : 1} Online',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFE8F5E9),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -195,34 +236,66 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
             // Chat Message List
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Color(0xFF0D631B)))
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF0D631B),
+                      ),
+                    )
                   : _messages.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'Kirim pesan untuk memulai obrolan!',
-                            style: TextStyle(color: Colors.grey),
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8F5E9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.forum_outlined,
+                              size: 36,
+                              color: Color(0xFF0D631B),
+                            ),
                           ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: _messages.length,
-                          itemBuilder: (context, index) {
-                            final msg = _messages[index];
-                            final isMe = msg.userId == _currentUserId;
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Kirim pesan untuk memulai obrolan!',
+                            style: TextStyle(
+                              color: Color(0xFF6B8B72),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        final msg = _messages[index];
+                        final isMe = msg.userId == _currentUserId;
 
-                            return _buildMessageBubble(msg, isMe);
-                          },
-                        ),
+                        return _buildMessageBubble(msg, isMe);
+                      },
+                    ),
             ),
             // Message Input Bar
             Container(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 16),
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 12,
+                bottom: 16,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
+                border: const Border(top: BorderSide(color: Color(0xFFE2EFE0))),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withOpacity(0.02),
                     blurRadius: 10,
                     offset: const Offset(0, -3),
                   ),
@@ -233,33 +306,52 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5EB),
+                        color: const Color(0xFFF4F8F4),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFFE0E4DA)),
+                        border: Border.all(color: const Color(0xFFE2EFE0)),
                       ),
                       child: TextField(
                         controller: _messageController,
                         maxLines: null,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF1A2218),
+                          fontWeight: FontWeight.w500,
+                        ),
                         decoration: const InputDecoration(
                           hintText: 'Ketik pesan...',
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                          hintStyle: TextStyle(
+                            color: Color(0xFF8FA89A),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   GestureDetector(
                     onTap: _sendMessage,
                     child: Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF0D631B),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0D631B),
                         shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF0D631B).withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: const Icon(
-                        Icons.send,
+                        Icons.send_rounded,
                         color: Colors.white,
                         size: 20,
                       ),
@@ -281,47 +373,73 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
             CircleAvatar(
               radius: 16,
-              backgroundColor: const Color(0xFF0D631B),
+              backgroundColor: const Color(0xFFE8F5E9),
               child: Text(
                 initial,
-                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Color(0xFF0D631B),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(width: 8),
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isMe
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 if (!isMe)
-                  Text(
-                    name,
-                    style: const TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.w500),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 4),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF6B8B72),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                const SizedBox(height: 3),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
-                    color: isMe ? const Color(0xFFC9E7CA) : Colors.white,
-                    border: Border.all(color: const Color(0xFFE0E4DA)),
+                    color: isMe ? const Color(0xFF0D631B) : Colors.white,
+                    border: Border.all(
+                      color: isMe
+                          ? Colors.transparent
+                          : const Color(0xFFE2EFE0),
+                    ),
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
                       topRight: const Radius.circular(16),
-                      bottomLeft: isMe ? const Radius.circular(16) : Radius.zero,
-                      bottomRight: isMe ? Radius.zero : const Radius.circular(16),
+                      bottomLeft: isMe
+                          ? const Radius.circular(16)
+                          : Radius.zero,
+                      bottomRight: isMe
+                          ? Radius.zero
+                          : const Radius.circular(16),
                     ),
                   ),
                   child: Text(
                     msg.message,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF181D17),
+                      fontWeight: FontWeight.w500,
+                      color: isMe ? Colors.white : const Color(0xFF1A2218),
                     ),
                   ),
                 ),
@@ -332,10 +450,14 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
             const SizedBox(width: 8),
             CircleAvatar(
               radius: 16,
-              backgroundColor: const Color(0xFFC9E7CA),
+              backgroundColor: const Color(0xFF0D631B),
               child: Text(
                 initial,
-                style: const TextStyle(color: Color(0xFF0D631B), fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
