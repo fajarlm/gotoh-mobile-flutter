@@ -24,8 +24,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
   String? _sweetDrinks;
 
   static const _primaryGreen = Color(0xFF0D631B);
-  static const _labelColor = Color(0xFF40493D);
-  static const _titleColor = Color(0xFF181D17);
+  static const _labelColor = Color(0xFF6B8B72);
+  static const _titleColor = Color(0xFF1B3C21);
+  static const _borderColor = Color(0xFFE2EFE0);
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
               'Kebiasaan Makan',
               style: TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 color: _titleColor,
                 letterSpacing: -0.24,
               ),
@@ -79,12 +80,17 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFFEBEFE5),
+                color: const Color(0xFFF4F8F4),
                 borderRadius: BorderRadius.circular(9999),
+                border: Border.all(color: _borderColor),
               ),
               child: const Text(
                 'Langkah 2 dari 6',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: _labelColor),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: _labelColor,
+                ),
               ),
             ),
           ],
@@ -95,7 +101,12 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
         _buildQuestion(
           number: '1',
           question: 'Berapa kali Anda makan dalam sehari?',
-          options: const ['Sekali', 'Dua kali', 'Tiga kali', 'Lebih dari tiga kali'],
+          options: const [
+            'Sekali',
+            'Dua kali',
+            'Tiga kali',
+            'Lebih dari tiga kali',
+          ],
           selected: _mealsPerDay,
           onSelect: (v) => setState(() => _mealsPerDay = v),
           isRadio: false,
@@ -106,7 +117,12 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
         _buildQuestion(
           number: '2',
           question: 'Seberapa sering Anda makan makanan cepat saji?',
-          options: const ['Tidak pernah', '1–2 kali/minggu', '3–5 kali/minggu', 'Hampir setiap hari'],
+          options: const [
+            'Tidak pernah',
+            '1–2 kali/minggu',
+            '3–5 kali/minggu',
+            'Hampir setiap hari',
+          ],
           selected: _fastFoodFreq,
           onSelect: (v) => setState(() => _fastFoodFreq = v),
           isRadio: true,
@@ -117,7 +133,12 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
         _buildQuestion(
           number: '3',
           question: 'Apakah Anda mengonsumsi minuman manis?',
-          options: const ['Tidak pernah', 'Kadang-kadang', 'Sering', 'Setiap hari'],
+          options: const [
+            'Tidak pernah',
+            'Kadang-kadang',
+            'Sering',
+            'Setiap hari',
+          ],
           selected: _sweetDrinks,
           onSelect: (v) => setState(() => _sweetDrinks = v),
           isRadio: true,
@@ -132,11 +153,17 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                 onPressed: widget.onBack,
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _primaryGreen,
-                  side: const BorderSide(color: _primaryGreen),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  side: const BorderSide(color: _primaryGreen, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 0,
                 ),
-                child: const Text('Kembali', style: TextStyle(fontWeight: FontWeight.w600)),
+                child: const Text(
+                  'Kembali',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -147,12 +174,16 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _primaryGreen,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 4,
-                  shadowColor: _primaryGreen.withValues(alpha: 0.3),
+                  elevation: 0,
                 ),
-                child: const Text('Lanjut', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+                child: const Text(
+                  'Lanjut',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -161,7 +192,11 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
         const Center(
           child: Text(
             'Data Anda terenkripsi aman sesuai standar privasi kesehatan.',
-            style: TextStyle(fontSize: 11, color: Color(0xFF8FA89A)),
+            style: TextStyle(
+              fontSize: 11,
+              color: Color(0xFF8FA89A),
+              fontWeight: FontWeight.w500,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -196,7 +231,7 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 15,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
@@ -207,7 +242,7 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                 question,
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w850,
                   color: _titleColor,
                   height: 1.4,
                 ),
@@ -220,8 +255,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF1F5EB),
-              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFFF4F8F4),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: _borderColor),
             ),
             child: Column(
               children: options.map((opt) {
@@ -235,9 +271,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? _primaryGreen : Colors.transparent,
+                        color: isSelected ? _primaryGreen : _borderColor,
                         width: 1.5,
                       ),
                     ),
@@ -251,12 +287,18 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                             shape: BoxShape.circle,
                             color: isSelected ? _primaryGreen : Colors.white,
                             border: Border.all(
-                              color: isSelected ? _primaryGreen : const Color(0xFFBFCABA),
+                              color: isSelected
+                                  ? _primaryGreen
+                                  : const Color(0xFFBFCABA),
                             ),
                           ),
                           child: isSelected
                               ? const Center(
-                                  child: Icon(Icons.check, size: 13, color: Colors.white),
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 13,
+                                    color: Colors.white,
+                                  ),
                                 )
                               : null,
                         ),
@@ -266,7 +308,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                           style: TextStyle(
                             fontSize: 15,
                             color: _titleColor,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
                           ),
                         ),
                       ],
@@ -286,12 +330,15 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                   duration: const Duration(milliseconds: 150),
                   width: double.infinity,
                   margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: isSelected ? const Color(0xFFE8F5E9) : Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: isSelected ? _primaryGreen : const Color(0xFFBFCABA).withValues(alpha: 0.5),
+                      color: isSelected ? _primaryGreen : _borderColor,
                       width: isSelected ? 1.5 : 1,
                     ),
                   ),
@@ -300,7 +347,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                     style: TextStyle(
                       fontSize: 15,
                       color: _titleColor,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                     ),
                   ),
                 ),
@@ -333,14 +382,8 @@ class _ProgressCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -350,11 +393,19 @@ class _ProgressCard extends StatelessWidget {
             children: [
               Text(
                 'Langkah $step dari $totalSteps',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF40493D)),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF6B8B72),
+                ),
               ),
               Text(
                 '${(percent * 100).round()}% Selesai',
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: primary),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: primary,
+                ),
               ),
             ],
           ),
@@ -364,7 +415,7 @@ class _ProgressCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: percent,
               minHeight: 8,
-              backgroundColor: const Color(0xFFC9E8CA),
+              backgroundColor: const Color(0xFFE2EFE0),
               valueColor: const AlwaysStoppedAnimation<Color>(primary),
             ),
           ),
