@@ -13,7 +13,7 @@ class PostCreatePage extends StatefulWidget {
 class _PostCreatePageState extends State<PostCreatePage> {
   final TextEditingController _contentController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  
+
   File? _imageFile;
   String _selectedType = 'public'; // 'public' or 'private'
   bool _isSubmitting = false;
@@ -36,9 +36,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memilih gambar: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal memilih gambar: $e')));
     }
   }
 
@@ -105,7 +105,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Buat Postingan Baru',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       body: SafeArea(
@@ -117,7 +121,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
               // 1. Selector Visibility Card
               const Text(
                 'Tipe Postingan',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF1B3C21)),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1B3C21),
+                ),
               ),
               const SizedBox(height: 12),
               Row(
@@ -146,7 +154,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
               // 2. Content Input Area
               const Text(
                 'Konten Postingan',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF1B3C21)),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1B3C21),
+                ),
               ),
               const SizedBox(height: 12),
               Container(
@@ -154,23 +166,28 @@ class _PostCreatePageState extends State<PostCreatePage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: const Color(0xFFE2EFE0)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: TextField(
                   controller: _contentController,
                   maxLines: 6,
                   keyboardType: TextInputType.multiline,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF1A2218)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF1B3C21),
+                  ),
                   decoration: const InputDecoration(
-                    hintText: 'Tulis sesuatu yang bermanfaat atau bagikan tips hari ini...',
-                    hintStyle: TextStyle(color: Color(0xFF8FA89A), fontSize: 13, fontWeight: FontWeight.w500),
+                    hintText:
+                        'Tulis sesuatu yang bermanfaat atau bagikan tips hari ini...',
+                    hintStyle: TextStyle(
+                      color: Color(0xFF8FA89A),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                     border: InputBorder.none,
                   ),
                 ),
@@ -180,7 +197,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
               // 3. Media Section
               const Text(
                 'Lampiran Gambar',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF1B3C21)),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1B3C21),
+                ),
               ),
               const SizedBox(height: 12),
               _imageFile == null
@@ -193,13 +214,6 @@ class _PostCreatePageState extends State<PostCreatePage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: const Color(0xFFE2EFE0)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.01),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -210,12 +224,20 @@ class _PostCreatePageState extends State<PostCreatePage> {
                                 color: Color(0xFFE8F5E9),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.add_photo_alternate_rounded, color: Color(0xFF0D631B), size: 28),
+                              child: const Icon(
+                                Icons.add_photo_alternate_rounded,
+                                color: Color(0xFF0D631B),
+                                size: 28,
+                              ),
                             ),
                             const SizedBox(height: 10),
                             const Text(
                               'Pilih Gambar dari Galeri',
-                              style: TextStyle(color: Color(0xFF0D631B), fontWeight: FontWeight.bold, fontSize: 13),
+                              style: TextStyle(
+                                color: Color(0xFF0D631B),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
                             ),
                           ],
                         ),
@@ -243,7 +265,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
                                 color: Colors.black54,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.close, color: Colors.white, size: 16),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),
@@ -253,7 +279,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
 
               // 4. Submit Button
               _isSubmitting
-                  ? const Center(child: CircularProgressIndicator(color: Color(0xFF0D631B)))
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF0D631B),
+                      ),
+                    )
                   : SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -261,16 +291,19 @@ class _PostCreatePageState extends State<PostCreatePage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0D631B),
                           foregroundColor: Colors.white,
-                          elevation: 4,
-                          shadowColor: const Color(0xFF0D631B).withOpacity(0.3),
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(14),
                           ),
                         ),
                         onPressed: _submitPost,
                         child: const Text(
                           'Bagikan Postingan',
-                          style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -301,16 +334,11 @@ class _PostCreatePageState extends State<PostCreatePage> {
           color: isSelected ? const Color(0xFFE8F5E9) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFF0D631B) : const Color(0xFFE2EFE0),
+            color: isSelected
+                ? const Color(0xFF0D631B)
+                : const Color(0xFFE2EFE0),
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.01),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,12 +346,16 @@ class _PostCreatePageState extends State<PostCreatePage> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFFC9E7CA) : const Color(0xFFF4F6F4),
+                color: isSelected
+                    ? const Color(0xFFC9E7CA)
+                    : const Color(0xFFF4F8F4),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: isSelected ? const Color(0xFF0D631B) : Colors.grey,
+                color: isSelected
+                    ? const Color(0xFF0D631B)
+                    : const Color(0xFF6B8B72),
                 size: 20,
               ),
             ),
@@ -333,7 +365,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: isSelected ? const Color(0xFF0D631B) : const Color(0xFF1A2218),
+                color: isSelected
+                    ? const Color(0xFF0D631B)
+                    : const Color(0xFF1B3C21),
               ),
             ),
             const SizedBox(height: 4),
@@ -342,7 +376,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
-                color: isSelected ? const Color(0xFF334D37) : Colors.grey,
+                color: isSelected
+                    ? const Color(0xFF334D37)
+                    : const Color(0xFF6B8B72),
               ),
             ),
           ],
