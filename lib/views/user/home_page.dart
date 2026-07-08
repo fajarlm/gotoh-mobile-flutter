@@ -267,34 +267,100 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [Color(0xFF0D631B), Color(0xFF1B8C2A)], begin: Alignment.topLeft, end: Alignment.bottomRight),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: _primaryGreen.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+          gradient: const LinearGradient(
+            colors: [Color(0xFF0D631B), Color(0xFF1E822E), Color(0xFF38B04D)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0D631B).withOpacity(0.18),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            )
+          ],
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('$greeting,', style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 2),
-                  Text(_username, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-                    child: const Text('Apa kabar hari ini?', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w500)),
-                  ),
-                ],
+            Positioned(
+              right: -10,
+              top: -10,
+              child: Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-            Container(
-              width: 60, height: 60,
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), shape: BoxShape.circle),
-              child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 32),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$greeting,',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _username,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.4,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Text(
+                          'Mulai hari sehatmu hari ini! ✨',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.favorite_rounded,
+                    color: Color(0xFF0D631B),
+                    size: 28,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -423,8 +489,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         decoration: BoxDecoration(
           color: _cardColor,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 14, offset: const Offset(0, 4))],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE2EFE0)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            )
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -434,22 +507,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
               child: Row(
                 children: [
-                  // Avatar with green ring if public
+                  // Avatar with green gradient ring if public
                   Container(
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: isPublic
-                          ? const LinearGradient(colors: [Color(0xFF0D631B), Color(0xFF4CAF50)])
+                          ? const LinearGradient(colors: [Color(0xFF0D631B), Color(0xFF38B04D)])
                           : null,
-                      color: isPublic ? null : const Color(0xFFE0E0E0),
+                      color: isPublic ? null : const Color(0xFFD0DCD0),
                     ),
                     child: CircleAvatar(
                       radius: 21,
                       backgroundColor: _lightGreen,
                       backgroundImage: avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
                       child: avatarUrl.isEmpty
-                          ? Text(user?.initials ?? '?', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: _textMid))
+                          ? Text(user?.initials ?? '?', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: _primaryGreen))
                           : null,
                     ),
                   ),
@@ -460,31 +533,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         Text(
                           user?.username ?? 'Unknown',
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: _textDark),
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: _textDark),
                         ),
-                        const SizedBox(height: 3),
-                        Row(children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: isPublic ? const Color(0xFFE8F5E9) : const Color(0xFFFFF3E0),
-                              borderRadius: BorderRadius.circular(6),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: isPublic ? const Color(0xFFE8F5E9) : const Color(0xFFFFF3E0),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
+                                    size: 11,
+                                    color: isPublic ? _primaryGreen : Colors.orange.shade800,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    isPublic ? 'Publik' : 'Privat',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: isPublic ? _primaryGreen : Colors.orange.shade800,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Row(children: [
-                              Icon(isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
-                                  size: 10, color: isPublic ? _primaryGreen : Colors.orange.shade700),
-                              const SizedBox(width: 3),
-                              Text(isPublic ? 'Publik' : 'Privat',
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
-                                      color: isPublic ? _primaryGreen : Colors.orange.shade700)),
-                            ]),
-                          ),
-                          if (post.createdAt != null) ...[
-                            const SizedBox(width: 6),
-                            Text('· ${_formatDate(post.createdAt!)}',
-                                style: const TextStyle(fontSize: 11, color: _textLight)),
+                            if (post.createdAt != null) ...[
+                              const SizedBox(width: 8),
+                              Text(
+                                '· ${_formatDate(post.createdAt!)}',
+                                style: const TextStyle(fontSize: 11, color: _textLight, fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ],
-                        ]),
+                        ),
                       ],
                     ),
                   ),
@@ -493,7 +580,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       icon: const Icon(Icons.more_horiz_rounded, color: _textLight, size: 22),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       onSelected: (val) {
                         if (val == 'edit') _showEditPostDialog(post);
                         if (val == 'delete') _onDeletePost(post);
@@ -501,19 +588,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       itemBuilder: (_) => [
                         const PopupMenuItem(
                           value: 'edit',
-                          child: Row(children: [
-                            Icon(Icons.edit_outlined, size: 18, color: Color(0xFF0D631B)),
-                            SizedBox(width: 8),
-                            Text('Edit'),
-                          ]),
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit_outlined, size: 18, color: Color(0xFF0D631B)),
+                              const SizedBox(width: 8),
+                              Text('Edit', style: TextStyle(fontWeight: FontWeight.w600)),
+                            ],
+                          ),
                         ),
                         const PopupMenuItem(
                           value: 'delete',
-                          child: Row(children: [
-                            Icon(Icons.delete_outline, size: 18, color: Color(0xFFBA1A1A)),
-                            SizedBox(width: 8),
-                            Text('Hapus', style: TextStyle(color: Color(0xFFBA1A1A))),
-                          ]),
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline, size: 18, color: Color(0xFFBA1A1A)),
+                              const SizedBox(width: 8),
+                              Text('Hapus', style: TextStyle(color: Color(0xFFBA1A1A), fontWeight: FontWeight.w600)),
+                            ],
+                          ),
                         ),
                       ],
                     )
@@ -531,47 +622,61 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   post.content!,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, height: 1.6, color: _textDark),
+                  style: const TextStyle(fontSize: 14, height: 1.55, color: _textDark, fontWeight: FontWeight.w500),
                 ),
               ),
 
-            // ── Image ──
+            // ── Image with proper padding and rounding ──
             if (post.image != null && post.image!.isNotEmpty)
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(bottom: Radius.zero),
-                child: Image.network(
-                  post.imageUrl,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.network(
+                    post.imageUrl,
                     height: 200,
-                    color: const Color(0xFFF0F0F0),
-                    child: const Icon(Icons.image_not_supported_rounded, size: 40, color: _textLight),
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF4F6F4),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.image_not_supported_rounded, size: 36, color: _textLight),
+                    ),
                   ),
                 ),
               ),
 
             // ── Action Bar ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: Row(
                 children: [
                   _actionBtn(
                     icon: post.isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
                     label: '${post.likeCount}',
-                    color: post.isLiked ? const Color(0xFFE53935) : _textLight,
+                    color: post.isLiked ? const Color(0xFFD32F2F) : const Color(0xFF5A7561),
+                    bgColor: post.isLiked ? const Color(0xFFFFEBEE) : const Color(0xFFF4F8F4),
                     onTap: () => _onLikePost(post.id),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 8),
                   _actionBtn(
                     icon: Icons.chat_bubble_outline_rounded,
                     label: '${post.commentCount}',
-                    color: _textLight,
+                    color: const Color(0xFF0D631B),
+                    bgColor: const Color(0xFFE8F5E9),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostDetailPage(postId: post.id))),
                   ),
                   const Spacer(),
-                  _actionBtn(icon: Icons.share_outlined, label: 'Bagikan', color: _textLight, onTap: () {}),
+                  _actionBtn(
+                    icon: Icons.share_outlined,
+                    label: 'Bagikan',
+                    color: const Color(0xFF4A6B51),
+                    bgColor: const Color(0xFFF4F8F4),
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
@@ -581,17 +686,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _actionBtn({required IconData icon, required String label, required Color color, required VoidCallback onTap}) {
+  Widget _actionBtn({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Color bgColor,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 5),
-          Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color)),
-        ]),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: color),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color),
+            ),
+          ],
+        ),
       ),
     );
   }
