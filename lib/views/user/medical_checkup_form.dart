@@ -10,21 +10,31 @@ class MedicalCheckupFormPage extends StatefulWidget {
 
 class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _heartRateController = TextEditingController();
   final TextEditingController _bpController = TextEditingController();
   final TextEditingController _sugarController = TextEditingController();
   final TextEditingController _cholesterolController = TextEditingController();
-  
+
   DateTime _selectedDate = DateTime.now();
   bool _isSubmitting = false;
 
   String _formatDate(DateTime date) {
     final months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
@@ -110,7 +120,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Medical checkup berhasil disimpan!')),
         );
-        Navigator.pop(context, true); // Pop back to Health Page and trigger refresh
+        Navigator.pop(
+          context,
+          true,
+        ); // Pop back to Health Page and trigger refresh
       }
     } else {
       if (mounted) {
@@ -128,14 +141,22 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FBF0),
+      backgroundColor: const Color(0xFFFAFDF9),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0D631B),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0D631B), Color(0xFF2E7D32)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Input Medical Checkup',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
         ),
       ),
       body: SafeArea(
@@ -150,8 +171,8 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                   'Catat Kesehatan Anda',
                   style: TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF181D17),
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF1B3C21),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -159,7 +180,9 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                   'Masukkan parameter vital dan laboratorium Anda untuk mendapatkan analisis kesehatan serta rekomendasi olahraga dari sistem.',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF40493D),
+                    color: Color(0xFF6B8B72),
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -167,27 +190,42 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                 // Date Picker Input
                 InkWell(
                   onTap: () => _selectDate(context),
+                  borderRadius: BorderRadius.circular(16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE0E4DA)),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFE2EFE0)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today, color: Color(0xFF0D631B), size: 20),
+                            const Icon(
+                              Icons.calendar_today_rounded,
+                              color: Color(0xFF0D631B),
+                              size: 20,
+                            ),
                             const SizedBox(width: 12),
                             Text(
                               'Tanggal: ${_formatDate(_selectedDate)}',
-                              style: const TextStyle(fontSize: 15, color: Color(0xFF181D17)),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF1B3C21),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
-                        const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                        const Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: Color(0xFF6B8B72),
+                        ),
                       ],
                     ),
                   ),
@@ -197,7 +235,7 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                 // Physical Parameters Card
                 _buildSectionCard(
                   title: 'Parameter Fisik',
-                  icon: Icons.accessibility,
+                  icon: Icons.accessibility_new_rounded,
                   children: [
                     _buildTextField(
                       controller: _heightController,
@@ -205,8 +243,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 170',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Tinggi badan harus diisi';
-                        if (double.tryParse(value) == null) return 'Nilai tidak valid';
+                        if (value == null || value.isEmpty)
+                          return 'Tinggi badan harus diisi';
+                        if (double.tryParse(value) == null)
+                          return 'Nilai tidak valid';
                         return null;
                       },
                     ),
@@ -217,8 +257,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 65',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Berat badan harus diisi';
-                        if (double.tryParse(value) == null) return 'Nilai tidak valid';
+                        if (value == null || value.isEmpty)
+                          return 'Berat badan harus diisi';
+                        if (double.tryParse(value) == null)
+                          return 'Nilai tidak valid';
                         return null;
                       },
                     ),
@@ -229,7 +271,7 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                 // Vitals Parameters Card
                 _buildSectionCard(
                   title: 'Parameter Vital',
-                  icon: Icons.favorite,
+                  icon: Icons.favorite_rounded,
                   children: [
                     _buildTextField(
                       controller: _bpController,
@@ -237,7 +279,8 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 120/80',
                       keyboardType: TextInputType.text,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Tekanan darah harus diisi';
+                        if (value == null || value.isEmpty)
+                          return 'Tekanan darah harus diisi';
                         return null;
                       },
                     ),
@@ -248,8 +291,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 75',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Detak jantung harus diisi';
-                        if (int.tryParse(value) == null) return 'Nilai tidak valid';
+                        if (value == null || value.isEmpty)
+                          return 'Detak jantung harus diisi';
+                        if (int.tryParse(value) == null)
+                          return 'Nilai tidak valid';
                         return null;
                       },
                     ),
@@ -260,7 +305,7 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                 // Laboratory Parameters Card
                 _buildSectionCard(
                   title: 'Hasil Laboratorium',
-                  icon: Icons.science,
+                  icon: Icons.science_rounded,
                   children: [
                     _buildTextField(
                       controller: _sugarController,
@@ -268,8 +313,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 95',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Gula darah harus diisi';
-                        if (double.tryParse(value) == null) return 'Nilai tidak valid';
+                        if (value == null || value.isEmpty)
+                          return 'Gula darah harus diisi';
+                        if (double.tryParse(value) == null)
+                          return 'Nilai tidak valid';
                         return null;
                       },
                     ),
@@ -280,8 +327,10 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                       hint: 'Contoh: 180',
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Kolesterol harus diisi';
-                        if (double.tryParse(value) == null) return 'Nilai tidak valid';
+                        if (value == null || value.isEmpty)
+                          return 'Kolesterol harus diisi';
+                        if (double.tryParse(value) == null)
+                          return 'Nilai tidak valid';
                         return null;
                       },
                     ),
@@ -291,15 +340,20 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
 
                 // Save Button
                 _isSubmitting
-                    ? const Center(child: CircularProgressIndicator(color: Color(0xFF0D631B)))
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF0D631B),
+                        ),
+                      )
                     : SizedBox(
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0D631B),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(14),
                             ),
                           ),
                           onPressed: _submitForm,
@@ -331,15 +385,8 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0E4DA)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2EFE0)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,13 +399,13 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
                 title,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
                   color: Color(0xFF0D631B),
                 ),
               ),
             ],
           ),
-          const Divider(height: 24, color: Color(0xFFE0E4DA)),
+          const Divider(height: 24, color: Color(0xFFE2EFE0)),
           ...children,
         ],
       ),
@@ -376,28 +423,49 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF1B3C21),
+      ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFF40493D)),
+        labelStyle: const TextStyle(
+          color: Color(0xFF6B8B72),
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF0D631B), width: 1.5),
+        hintStyle: const TextStyle(
+          color: Color(0xFF8FA89A),
+          fontWeight: FontWeight.w500,
+        ),
+        filled: true,
+        fillColor: const Color(0xFFF4F8F4),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFFE0E4DA)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0D631B), width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }
