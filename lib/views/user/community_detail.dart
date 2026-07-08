@@ -70,15 +70,37 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> with SingleTi
     });
 
     if (_community.isMember) {
-      // Leave
+      // Confirm leaving
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (_) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Keluar Komunitas'),
+          content: Text('Yakin ingin keluar dari komunitas "${_community.name}"?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFBA1A1A)),
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Keluar', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      );
+      if (confirm != true) {
+        setState(() {
+          _isActionInProgress = false;
+        });
+        return;
+      }
       final success = await CommunityService.leaveCommunity(_community.id);
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Anda telah keluar dari ${_community.name}')),
+          SnackBar(content: Text('Anda telah keluar dari ${_community.name}'), backgroundColor: const Color(0xFF0D631B)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal keluar dari komunitas')),
+          const SnackBar(content: Text('Gagal keluar dari komunitas'), backgroundColor: Color(0xFFBA1A1A)),
         );
       }
     } else {
@@ -86,11 +108,11 @@ class _CommunityDetailPageState extends State<CommunityDetailPage> with SingleTi
       final success = await CommunityService.joinCommunity(_community.id);
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selamat! Anda bergabung dengan ${_community.name}')),
+          SnackBar(content: Text('Selamat! Anda bergabung dengan ${_community.name}'), backgroundColor: const Color(0xFF0D631B)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal bergabung dengan komunitas')),
+          const SnackBar(content: Text('Gagal bergabung dengan komunitas'), backgroundColor: Color(0xFFBA1A1A)),
         );
       }
     }
