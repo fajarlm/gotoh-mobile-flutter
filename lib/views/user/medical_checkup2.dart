@@ -242,8 +242,7 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                 question,
                 style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.w850,
-                  color: _titleColor,
+                  fontWeight: FontWeight.w800,
                   height: 1.4,
                 ),
               ),
@@ -309,7 +308,7 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
                             fontSize: 15,
                             color: _titleColor,
                             fontWeight: isSelected
-                                ? FontWeight.w700
+                                ? FontWeight.w800
                                 : FontWeight.w500,
                           ),
                         ),

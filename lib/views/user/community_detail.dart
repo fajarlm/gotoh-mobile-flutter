@@ -538,7 +538,7 @@ class _CommunityDetailPageState extends State<CommunityDetailPage>
                               final member = _members[index];
                               final user =
                                   member['User'] as Map<String, dynamic>?;
-                              final name = user?['name'] ?? 'Anggota Gotoh';
+                              final name = user?['username'] ?? 'Anggota Gotoh';
                               final role = member['role'] ?? 'member';
 
                               return Container(
