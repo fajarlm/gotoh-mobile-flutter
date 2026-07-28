@@ -7,6 +7,7 @@ import 'package:fe_mobile/model/user_model.dart';
 import 'package:fe_mobile/model/health_model.dart';
 import 'package:fe_mobile/views/Auth/auth_page.dart';
 import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -137,31 +138,25 @@ class _EditProfileState extends State<EditProfile> {
         }
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profil berhasil diperbarui!'),
-              backgroundColor: Color(0xFF0D631B),
-            ),
+          CustomSnackBar.showSuccess(
+            context: context,
+            message: 'Profil berhasil diperbarui!',
           );
           Navigator.pop(context, true);
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(res['message'] ?? 'Gagal memperbarui profil'),
-              backgroundColor: const Color(0xFFBA1A1A),
-            ),
+          CustomSnackBar.showError(
+            context: context,
+            message: res['message'] ?? 'Gagal memperbarui profil',
           );
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Terjadi kesalahan: $e'),
-            backgroundColor: const Color(0xFFBA1A1A),
-          ),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Terjadi kesalahan: $e',
         );
       }
     } finally {
