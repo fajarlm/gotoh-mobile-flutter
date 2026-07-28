@@ -9,6 +9,7 @@ import 'package:fe_mobile/views/user/post_detail_page.dart';
 import 'package:fe_mobile/views/user/profile_page.dart';
 import 'package:fe_mobile/views/user/user_page.dart';
 import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -150,18 +151,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (!mounted) return;
     if (ok) {
       setState(() => _posts.removeWhere((p) => p.id == post.id));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Postingan berhasil dihapus'),
-          backgroundColor: Color(0xFF0D631B),
-        ),
+      CustomSnackBar.showSuccess(
+        context: context,
+        message: 'Postingan berhasil dihapus',
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal menghapus postingan'),
-          backgroundColor: Color(0xFFBA1A1A),
-        ),
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Gagal menghapus postingan',
       );
     }
   }
