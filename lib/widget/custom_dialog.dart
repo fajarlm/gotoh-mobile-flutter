@@ -436,4 +436,56 @@ class CustomDialog {
       ),
     );
   }
+
+  /// Shows a non-dismissible loading dialog with customizable text and color.
+  static Future<void> showLoading({
+    required BuildContext context,
+    String message = 'Memproses...',
+    Color? spinnerColor,
+    Color? textColor,
+  }) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return PopScope(
+          canPop: false, // Prevents closing via back button on Android
+          child: Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      spinnerColor ?? primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: textColor ?? textDark,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Hides the loading dialog (helper method).
+  static void hideLoading(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
 }
