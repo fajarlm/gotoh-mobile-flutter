@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fe_mobile/services/health_service.dart';
 import 'package:fe_mobile/model/health_model.dart';
 import 'package:fe_mobile/views/user/medical_checkup_form.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
 
 class HealthPage extends StatefulWidget {
   const HealthPage({super.key});
@@ -257,59 +258,13 @@ class _HealthPageState extends State<HealthPage> {
                 color: Colors.redAccent,
               ),
               onPressed: () async {
-                final confirm = await showDialog<bool>(
+                final confirm = await CustomDialog.showConfirm(
                   context: context,
-                  builder: (ctx) => AlertDialog(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    title: const Text(
-                      'Hapus Data?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1B3C21),
-                      ),
-                    ),
-                    content: const Text(
-                      'Apakah Anda yakin ingin menghapus data medical checkup terakhir ini?',
-                      style: TextStyle(
-                        color: Color(0xFF6B8B72),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text(
-                          'Batal',
-                          style: TextStyle(
-                            color: Color(0xFF6B8B72),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                        ),
-                        child: const Text(
-                          'Hapus',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
+                  title: 'Hapus Data?',
+                  message: 'Apakah Anda yakin ingin menghapus data medical checkup terakhir ini?',
+                  confirmLabel: 'Hapus',
+                  cancelLabel: 'Batal',
+                  isDestructive: true,
                 );
                 if (confirm == true) {
                   final ok = await HealthService.deleteCheckup(checkup.id);
