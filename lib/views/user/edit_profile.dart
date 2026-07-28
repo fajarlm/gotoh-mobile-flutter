@@ -6,6 +6,7 @@ import 'package:fe_mobile/services/auth_services.dart';
 import 'package:fe_mobile/model/user_model.dart';
 import 'package:fe_mobile/model/health_model.dart';
 import 'package:fe_mobile/views/Auth/auth_page.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -175,54 +176,13 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _confirmDeleteAccount() async {
     if (_currentUser == null) return;
 
-    final confirm = await showDialog<bool>(
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Hapus Akun',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1B3C21),
-          ),
-        ),
-        content: const Text(
-          'Apakah Anda yakin ingin menghapus akun Anda secara permanen? Tindakan ini tidak dapat dibatalkan.',
-          style: TextStyle(
-            color: Color(0xFF6B8B72),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Batal',
-              style: TextStyle(
-                color: Color(0xFF6B8B72),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFBA1A1A),
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            child: const Text(
-              'Hapus',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      title: 'Hapus Akun',
+      message: 'Apakah Anda yakin ingin menghapus akun Anda secara permanen? Tindakan ini tidak dapat dibatalkan.',
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+      isDestructive: true,
     );
 
     if (confirm == true) {
