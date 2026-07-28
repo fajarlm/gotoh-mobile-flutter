@@ -116,6 +116,10 @@ class CustomDialog {
     required String message,
     String buttonText = 'OK',
     VoidCallback? onPressed,
+    Color? iconColor,
+    Color? iconBgColor,
+    Color? buttonColor,
+    Color? buttonTextColor,
   }) {
     return _showBaseDialog<void>(
       context: context,
@@ -124,13 +128,13 @@ class CustomDialog {
         message: message,
         icon: Container(
           padding: const EdgeInsets.all(12),
-          decoration: const BoxDecoration(
-            color: Color(0xFFE8F5E9),
+          decoration: BoxDecoration(
+            color: iconBgColor ?? const Color(0xFFE8F5E9),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.check_circle_rounded,
-            color: primaryColor,
+            color: iconColor ?? primaryColor,
             size: 40,
           ),
         ),
@@ -139,8 +143,8 @@ class CustomDialog {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                foregroundColor: Colors.white,
+                backgroundColor: buttonColor ?? primaryColor,
+                foregroundColor: buttonTextColor ?? Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -169,6 +173,10 @@ class CustomDialog {
     required String message,
     String buttonText = 'OK',
     VoidCallback? onPressed,
+    Color? iconColor,
+    Color? iconBgColor,
+    Color? buttonColor,
+    Color? buttonTextColor,
   }) {
     return _showBaseDialog<void>(
       context: context,
@@ -177,13 +185,13 @@ class CustomDialog {
         message: message,
         icon: Container(
           padding: const EdgeInsets.all(12),
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFEBEE),
+          decoration: BoxDecoration(
+            color: iconBgColor ?? const Color(0xFFFFEBEE),
             shape: BoxShape.circle,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.error_outline_rounded,
-            color: errorColor,
+            color: iconColor ?? errorColor,
             size: 40,
           ),
         ),
@@ -192,8 +200,122 @@ class CustomDialog {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: errorColor,
-                foregroundColor: Colors.white,
+                backgroundColor: buttonColor ?? errorColor,
+                foregroundColor: buttonTextColor ?? Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                if (onPressed != null) onPressed();
+              },
+              child: Text(
+                buttonText,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Shows a beautiful warning modal dialog.
+  static Future<void> showWarning({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String buttonText = 'OK',
+    VoidCallback? onPressed,
+    Color? iconColor,
+    Color? iconBgColor,
+    Color? buttonColor,
+    Color? buttonTextColor,
+  }) {
+    return _showBaseDialog<void>(
+      context: context,
+      dialog: CustomDialogWidget(
+        title: title,
+        message: message,
+        icon: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: iconBgColor ?? const Color(0xFFFFF8E1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.warning_amber_rounded,
+            color: iconColor ?? warningColor,
+            size: 40,
+          ),
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: buttonColor ?? warningColor,
+                foregroundColor: buttonTextColor ?? Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                elevation: 0,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                if (onPressed != null) onPressed();
+              },
+              child: Text(
+                buttonText,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Shows a beautiful info modal dialog.
+  static Future<void> showInfo({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String buttonText = 'OK',
+    VoidCallback? onPressed,
+    Color? iconColor,
+    Color? iconBgColor,
+    Color? buttonColor,
+    Color? buttonTextColor,
+  }) {
+    return _showBaseDialog<void>(
+      context: context,
+      dialog: CustomDialogWidget(
+        title: title,
+        message: message,
+        icon: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: iconBgColor ?? const Color(0xFFE3F2FD),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.info_outline_rounded,
+            color: iconColor ?? infoColor,
+            size: 40,
+          ),
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: buttonColor ?? infoColor,
+                foregroundColor: buttonTextColor ?? Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -224,7 +346,15 @@ class CustomDialog {
     String cancelLabel = 'Batal',
     String confirmLabel = 'Ya, Lanjutkan',
     bool isDestructive = false,
+    Color? confirmButtonColor,
+    Color? cancelButtonColor,
+    Color? iconColor,
+    Color? iconBgColor,
   }) {
+    final Color finalIconColor = iconColor ?? (isDestructive ? errorColor : primaryColor);
+    final Color finalIconBgColor = iconBgColor ?? (isDestructive ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9));
+    final Color finalConfirmColor = confirmButtonColor ?? (isDestructive ? errorColor : primaryColor);
+
     return _showBaseDialog<bool>(
       context: context,
       dialog: CustomDialogWidget(
@@ -233,12 +363,12 @@ class CustomDialog {
         icon: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isDestructive ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9),
+            color: finalIconBgColor,
             shape: BoxShape.circle,
           ),
           child: Icon(
             isDestructive ? Icons.delete_outline_rounded : Icons.help_outline_rounded,
-            color: isDestructive ? errorColor : primaryColor,
+            color: finalIconColor,
             size: 40,
           ),
         ),
@@ -248,7 +378,7 @@ class CustomDialog {
               Expanded(
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: textLight,
+                    foregroundColor: cancelButtonColor ?? textLight,
                     side: const BorderSide(color: Color(0xFFE0E0E0)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -266,7 +396,7 @@ class CustomDialog {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isDestructive ? errorColor : primaryColor,
+                    backgroundColor: finalConfirmColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
