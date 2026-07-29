@@ -11,8 +11,7 @@ class CustomSnackBar {
     _show(
       context: context,
       message: message,
-      backgroundColor: const Color(0xFFE8F5E9),
-      textColor: const Color(0xFF0D631B),
+      iconColor: const Color(0xFF0D631B),
       icon: const Icon(
         Icons.check_circle_rounded,
         color: Color(0xFF0D631B),
@@ -31,8 +30,7 @@ class CustomSnackBar {
     _show(
       context: context,
       message: message,
-      backgroundColor: const Color(0xFFFFEBEE),
-      textColor: const Color(0xFFD32F2F),
+      iconColor: const Color(0xFFD32F2F),
       icon: const Icon(
         Icons.error_rounded,
         color: Color(0xFFD32F2F),
@@ -51,8 +49,7 @@ class CustomSnackBar {
     _show(
       context: context,
       message: message,
-      backgroundColor: const Color(0xFFFFF8E1),
-      textColor: const Color(0xFFF57F17),
+      iconColor: const Color(0xFFF57F17),
       icon: const Icon(
         Icons.warning_amber_rounded,
         color: Color(0xFFF57F17),
@@ -71,8 +68,7 @@ class CustomSnackBar {
     _show(
       context: context,
       message: message,
-      backgroundColor: const Color(0xFFE3F2FD),
-      textColor: const Color(0xFF0D47A1),
+      iconColor: const Color(0xFF0D47A1),
       icon: const Icon(
         Icons.info_outline_rounded,
         color: Color(0xFF0D47A1),
@@ -82,12 +78,11 @@ class CustomSnackBar {
     );
   }
 
-  /// Internal base function to present custom floating SnackBars.
+  /// Internal base function to present custom floating SnackBars with a cohesive green theme.
   static void _show({
     required BuildContext context,
     required String message,
-    required Color backgroundColor,
-    required Color textColor,
+    required Color iconColor,
     required Widget icon,
     required Duration duration,
   }) {
@@ -102,18 +97,18 @@ class CustomSnackBar {
         content: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: const Color(0xFFFAFDF9), // Off-white green app background color
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 10,
+                color: const Color(0xFF0D631B).withValues(alpha: 0.08), // Soft green brand shadow
+                blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
             ],
             border: Border.all(
-              color: textColor.withValues(alpha: 0.15),
-              width: 1,
+              color: const Color(0xFFC9E7CA), // Soft brand green border
+              width: 1.5,
             ),
           ),
           child: Row(
@@ -123,8 +118,8 @@ class CustomSnackBar {
               Expanded(
                 child: Text(
                   message,
-                  style: TextStyle(
-                    color: textColor,
+                  style: const TextStyle(
+                    color: Color(0xFF1B3C21), // Dark forest green text
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
