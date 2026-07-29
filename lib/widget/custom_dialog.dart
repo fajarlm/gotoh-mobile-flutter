@@ -200,7 +200,7 @@ class CustomDialog {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: buttonColor ?? errorColor,
+                backgroundColor: buttonColor ?? primaryColor,
                 foregroundColor: buttonTextColor ?? Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -257,7 +257,7 @@ class CustomDialog {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: buttonColor ?? warningColor,
+                backgroundColor: buttonColor ?? primaryColor,
                 foregroundColor: buttonTextColor ?? Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -314,7 +314,7 @@ class CustomDialog {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: buttonColor ?? infoColor,
+                backgroundColor: buttonColor ?? primaryColor,
                 foregroundColor: buttonTextColor ?? Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
