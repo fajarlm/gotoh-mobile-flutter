@@ -5,6 +5,8 @@ import 'package:fe_mobile/model/community_model.dart';
 import 'package:fe_mobile/services/community_service.dart';
 import 'package:fe_mobile/views/user/community_detail.dart';
 import 'package:fe_mobile/views/user/chat_room.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 // Alias agar konsisten dengan navigasi dari home_page.dart
 typedef MyCommunityPage = CommunityListPage;
@@ -56,59 +58,13 @@ class _CommunityListPageState extends State<CommunityListPage> {
     bool success;
 
     if (isMember) {
-      final confirm = await showDialog<bool>(
+      final confirm = await CustomDialog.showConfirm(
         context: context,
-        builder: (_) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: const Text(
-            'Keluar Komunitas',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1B3C21),
-            ),
-          ),
-          content: Text(
-            'Yakin ingin keluar dari komunitas "${community.name}"?',
-            style: const TextStyle(
-              color: Color(0xFF6B8B72),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text(
-                'Batal',
-                style: TextStyle(
-                  color: Color(0xFF6B8B72),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFBA1A1A),
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-              ),
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Keluar',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+        title: 'Keluar Komunitas',
+        message: 'Yakin ingin keluar dari komunitas "${community.name}"?',
+        confirmLabel: 'Keluar',
+        cancelLabel: 'Batal',
+        isDestructive: true,
       );
       if (confirm != true) {
         setState(() => _isLoading = false);
@@ -125,18 +81,14 @@ class _CommunityListPageState extends State<CommunityListPage> {
             );
           }
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Anda telah keluar dari ${community.name}'),
-            backgroundColor: const Color(0xFF0D631B),
-          ),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Anda telah keluar dari ${community.name}',
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal keluar dari komunitas'),
-            backgroundColor: Color(0xFFBA1A1A),
-          ),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal keluar dari komunitas',
         );
       }
     } else {
@@ -151,18 +103,14 @@ class _CommunityListPageState extends State<CommunityListPage> {
             );
           }
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Selamat! Anda bergabung dengan ${community.name}'),
-            backgroundColor: const Color(0xFF0D631B),
-          ),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Selamat! Anda bergabung dengan ${community.name}',
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal bergabung dengan komunitas'),
-            backgroundColor: Color(0xFFBA1A1A),
-          ),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal bergabung dengan komunitas',
         );
       }
     }
@@ -191,178 +139,170 @@ class _CommunityListPageState extends State<CommunityListPage> {
     final descController = TextEditingController();
     final locController = TextEditingController();
 
-    showDialog(
+    CustomDialog.showCustom<void>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: const Text(
-            'Buat Komunitas Baru',
-            style: TextStyle(
-              color: Color(0xFF1B3C21),
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1B3C21),
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Nama Komunitas',
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF6B8B72),
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descController,
-                  maxLines: 3,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1B3C21),
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Deskripsi',
-                    hintText: 'Minimal 10 karakter',
-                    hintStyle: const TextStyle(
-                      color: Color(0xFF8FA89A),
-                      fontSize: 12,
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF6B8B72),
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: locController,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1B3C21),
-                  ),
-                  decoration: InputDecoration(
-                    labelText: 'Lokasi (Opsional)',
-                    hintText: 'Contoh: Jakarta',
-                    hintStyle: const TextStyle(
-                      color: Color(0xFF8FA89A),
-                      fontSize: 12,
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Color(0xFF6B8B72),
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFF4F8F4),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Batal',
-                style: TextStyle(
+      title: 'Buat Komunitas Baru',
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
+              ),
+              decoration: InputDecoration(
+                labelText: 'Nama Komunitas',
+                labelStyle: const TextStyle(
                   color: Color(0xFF6B8B72),
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0D631B),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
+            const SizedBox(height: 12),
+            TextField(
+              controller: descController,
+              maxLines: 3,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
               ),
-              onPressed: () async {
-                final name = nameController.text.trim();
-                final desc = descController.text.trim();
-                final loc = locController.text.trim();
-
-                if (name.length < 3) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Nama minimal 3 karakter')),
-                  );
-                  return;
-                }
-                if (desc.length < 10) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Deskripsi minimal 10 karakter'),
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.pop(context);
-                final res = await CommunityService.createCommunity(
-                  name: name,
-                  description: desc,
-                  location: loc.isEmpty ? 'Publik' : loc,
-                );
-
-                if (res['success'] == true) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Komunitas berhasil dibuat!')),
-                  );
-                  _fetchCommunities();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        res['message'] ?? 'Gagal membuat komunitas',
-                      ),
-                    ),
-                  );
-                }
-              },
-              child: const Text(
-                'Buat',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                labelText: 'Deskripsi',
+                hintText: 'Minimal 10 karakter',
+                hintStyle: const TextStyle(
+                  color: Color(0xFF8FA89A),
+                  fontSize: 12,
+                ),
+                labelStyle: const TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: locController,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
+              ),
+              decoration: InputDecoration(
+                labelText: 'Lokasi (Opsional)',
+                hintText: 'Contoh: Jakarta',
+                hintStyle: const TextStyle(
+                  color: Color(0xFF8FA89A),
+                  fontSize: 12,
+                ),
+                labelStyle: const TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ],
-        );
-      },
+        ),
+      ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF6B8B72),
+                  side: const BorderSide(color: Color(0xFFE0E0E0)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0D631B),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                ),
+                onPressed: () async {
+                  final name = nameController.text.trim();
+                  final desc = descController.text.trim();
+                  final loc = locController.text.trim();
+
+                  if (name.length < 3) {
+                    CustomSnackBar.showWarning(
+                      context: context,
+                      message: 'Nama minimal 3 karakter',
+                    );
+                    return;
+                  }
+                  if (desc.length < 10) {
+                    CustomSnackBar.showWarning(
+                      context: context,
+                      message: 'Deskripsi minimal 10 karakter',
+                    );
+                    return;
+                  }
+
+                  Navigator.pop(context);
+                  final res = await CommunityService.createCommunity(
+                    name: name,
+                    description: desc,
+                    location: loc.isEmpty ? 'Publik' : loc,
+                  );
+
+                  if (res['success'] == true) {
+                    CustomSnackBar.showSuccess(
+                      context: context,
+                      message: 'Komunitas berhasil dibuat!',
+                    );
+                    _fetchCommunities();
+                  } else {
+                    CustomSnackBar.showError(
+                      context: context,
+                      message: res['message'] ?? 'Gagal membuat komunitas',
+                    );
+                  }
+                },
+                child: const Text('Buat', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -376,71 +316,27 @@ class _CommunityListPageState extends State<CommunityListPage> {
   }
 
   Future<void> _onDeleteCommunity(CommunityModel community) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Hapus Komunitas',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Color(0xFFBA1A1A),
-          ),
-        ),
-        content: Text(
-          'Yakin hapus komunitas "${community.name}"? Aksi ini tidak bisa dibatalkan.',
-          style: const TextStyle(
-            color: Color(0xFF6B8B72),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Batal',
-              style: TextStyle(
-                color: Color(0xFF6B8B72),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFBA1A1A),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              elevation: 0,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Hapus',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      title: 'Hapus Komunitas',
+      message: 'Yakin hapus komunitas "${community.name}"? Aksi ini tidak bisa dibatalkan.',
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+      isDestructive: true,
     );
     if (confirm != true) return;
     final ok = await CommunityService.deleteCommunity(community.id);
     if (!mounted) return;
     if (ok) {
       setState(() => _communities.removeWhere((c) => c.id == community.id));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Komunitas berhasil dihapus'),
-          backgroundColor: Color(0xFF0D631B),
-        ),
+      CustomSnackBar.showSuccess(
+        context: context,
+        message: 'Komunitas berhasil dihapus',
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal menghapus komunitas'),
-          backgroundColor: Color(0xFFBA1A1A),
-        ),
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Gagal menghapus komunitas',
       );
     }
   }
@@ -450,165 +346,159 @@ class _CommunityListPageState extends State<CommunityListPage> {
     final descCtrl = TextEditingController(text: community.description);
     final locCtrl = TextEditingController(text: community.location ?? '');
 
-    showDialog(
+    CustomDialog.showCustom<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          'Edit Komunitas',
-          style: TextStyle(
-            color: Color(0xFF1B3C21),
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-          ),
+      title: 'Edit Komunitas',
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
+              ),
+              decoration: InputDecoration(
+                labelText: 'Nama Komunitas',
+                labelStyle: const TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: descCtrl,
+              maxLines: 3,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
+              ),
+              decoration: InputDecoration(
+                labelText: 'Deskripsi',
+                labelStyle: const TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: locCtrl,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1B3C21),
+              ),
+              decoration: InputDecoration(
+                labelText: 'Lokasi',
+                labelStyle: const TextStyle(
+                  color: Color(0xFF6B8B72),
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF4F8F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ],
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameCtrl,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B3C21),
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Nama Komunitas',
-                  labelStyle: const TextStyle(
-                    color: Color(0xFF6B8B72),
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descCtrl,
-                maxLines: 3,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B3C21),
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Deskripsi',
-                  labelStyle: const TextStyle(
-                    color: Color(0xFF6B8B72),
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: locCtrl,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B3C21),
-                ),
-                decoration: InputDecoration(
-                  labelText: 'Lokasi',
-                  labelStyle: const TextStyle(
-                    color: Color(0xFF6B8B72),
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF4F8F4),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text(
-              'Batal',
-              style: TextStyle(
-                color: Color(0xFF6B8B72),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0D631B),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              elevation: 0,
-            ),
-            onPressed: () async {
-              final name = nameCtrl.text.trim();
-              final desc = descCtrl.text.trim();
-              final loc = locCtrl.text.trim();
-              if (name.length < 3) {
-                ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Nama minimal 3 karakter')),
-                );
-                return;
-              }
-              if (desc.length < 10) {
-                ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(
-                    content: Text('Deskripsi minimal 10 karakter'),
-                  ),
-                );
-                return;
-              }
-              Navigator.pop(ctx);
-              final res = await CommunityService.updateCommunity(
-                id: community.id,
-                name: name,
-                description: desc,
-                location: loc.isEmpty ? null : loc,
-              );
-              if (!mounted) return;
-              if (res['success'] == true) {
-                _fetchCommunities();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Komunitas berhasil diperbarui'),
-                    backgroundColor: Color(0xFF0D631B),
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(res['message'] ?? 'Gagal memperbarui'),
-                    backgroundColor: const Color(0xFFBA1A1A),
-                  ),
-                );
-              }
-            },
-            child: const Text(
-              'Simpan',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
       ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF6B8B72),
+                  side: const BorderSide(color: Color(0xFFE0E0E0)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0D631B),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                ),
+                onPressed: () async {
+                  final name = nameCtrl.text.trim();
+                  final desc = descCtrl.text.trim();
+                  final loc = locCtrl.text.trim();
+                  if (name.length < 3) {
+                    CustomSnackBar.showWarning(
+                      context: context,
+                      message: 'Nama minimal 3 karakter',
+                    );
+                    return;
+                  }
+                  if (desc.length < 10) {
+                    CustomSnackBar.showWarning(
+                      context: context,
+                      message: 'Deskripsi minimal 10 karakter',
+                    );
+                    return;
+                  }
+                  Navigator.pop(context);
+                  final res = await CommunityService.updateCommunity(
+                    id: community.id,
+                    name: name,
+                    description: desc,
+                    location: loc.isEmpty ? null : loc,
+                  );
+                  if (!mounted) return;
+                  if (res['success'] == true) {
+                    _fetchCommunities();
+                    CustomSnackBar.showSuccess(
+                      context: context,
+                      message: 'Komunitas berhasil diperbarui',
+                    );
+                  } else {
+                    CustomSnackBar.showError(
+                      context: context,
+                      message: res['message'] ?? 'Gagal memperbarui',
+                    );
+                  }
+                },
+                child: const Text('Simpan', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
