@@ -37,6 +37,7 @@ class _PostCreatePageState extends State<PostCreatePage> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       CustomSnackBar.showError(
         context: context,
         message: 'Gagal memilih gambar: $e',

@@ -71,6 +71,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
         return;
       }
       success = await CommunityService.leaveCommunity(community.id);
+      if (!mounted) return;
       if (success) {
         setState(() {
           final idx = _communities.indexWhere((c) => c.id == community.id);
@@ -93,6 +94,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
       }
     } else {
       success = await CommunityService.joinCommunity(community.id);
+      if (!mounted) return;
       if (success) {
         setState(() {
           final idx = _communities.indexWhere((c) => c.id == community.id);
@@ -284,6 +286,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     location: loc.isEmpty ? 'Publik' : loc,
                   );
 
+                  if (!mounted) return;
                   if (res['success'] == true) {
                     CustomSnackBar.showSuccess(
                       context: context,
