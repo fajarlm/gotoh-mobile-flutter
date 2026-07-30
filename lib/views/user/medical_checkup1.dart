@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 /// Step 1 of 6 – Informasi Pribadi (Usia, Jenis Kelamin, BB, TB)
 /// Dipanggil dari MedicalCheckupFormPage sebagai alternatif flow multi-step.
@@ -53,12 +54,9 @@ class _MedicalCheckup1State extends State<MedicalCheckup1> {
   void _onNext() {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedGender == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pilih jenis kelamin terlebih dahulu'),
-          backgroundColor: Color(0xFFBA1A1A),
-          behavior: SnackBarBehavior.floating,
-        ),
+      CustomSnackBar.showWarning(
+        context: context,
+        message: 'Pilih jenis kelamin terlebih dahulu',
       );
       return;
     }
