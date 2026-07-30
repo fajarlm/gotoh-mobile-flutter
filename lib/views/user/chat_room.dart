@@ -6,6 +6,7 @@ import 'package:fe_mobile/services/auth_services.dart';
 import 'package:fe_mobile/config/api_config.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class ChatRoomKomunitas extends StatefulWidget {
   final CommunityModel community;
@@ -134,10 +135,9 @@ class _ChatRoomKomunitasState extends State<ChatRoomKomunitas> {
       });
       _messageController.clear();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Koneksi terputus. Silakan coba sesaat lagi.'),
-        ),
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Koneksi terputus. Silakan coba sesaat lagi.',
       );
     }
   }
