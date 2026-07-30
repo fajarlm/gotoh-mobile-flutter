@@ -25,7 +25,6 @@ class _EditPostPageState extends State<EditPostPage>
   static const _textLight = Color(0xFF8FA89A);
   static const _cardColor = Colors.white;
   static const _borderColor = Color(0xFFE2EFE0);
-  static const _dangerColor = Color(0xFFBA1A1A);
 
   // ── State ──────────────────────────────────────────────────────────────────
   late TextEditingController _contentCtrl;
