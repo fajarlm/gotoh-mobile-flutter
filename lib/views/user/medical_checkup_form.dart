@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fe_mobile/services/health_service.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class MedicalCheckupFormPage extends StatefulWidget {
   const MedicalCheckupFormPage({super.key});
@@ -117,8 +118,9 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
       await HealthService.createRecommendation(bmiCategory: bmiCategory);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Medical checkup berhasil disimpan!')),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Medical checkup berhasil disimpan!',
         );
         Navigator.pop(
           context,
@@ -127,8 +129,9 @@ class _MedicalCheckupFormPageState extends State<MedicalCheckupFormPage> {
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(res['message'] ?? 'Gagal menyimpan checkup')),
+        CustomSnackBar.showError(
+          context: context,
+          message: res['message'] ?? 'Gagal menyimpan checkup',
         );
       }
     }
