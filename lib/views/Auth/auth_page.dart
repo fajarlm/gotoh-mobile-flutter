@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fe_mobile/services/auth_services.dart';
 import 'package:fe_mobile/views/admin/dashboard_admin.dart';
 import 'package:fe_mobile/views/user/user_page.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -156,81 +157,98 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   // }
 
   void _showSuccessDialog(String title, String message, {VoidCallback? onConfirm}) {
-    showDialog(
+    CustomDialog.showSuccess(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Color(0xFF2E7D32), size: 28),
-            const SizedBox(width: 12),
-            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-          ],
-        ),
-        content: Text(message, style: const TextStyle(fontSize: 14)),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // onconfirm = () = call() manggil function itu sendiri
-              onConfirm?.call();
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF2E7D32),
-            ),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+      title: title,
+      message: message,
+      onPressed: onConfirm,
     );
   }
 
   void _showForgotPasswordDialog() {
     final emailController = TextEditingController();
     
-    showDialog(
+    CustomDialog.showCustom<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: const Text('Lupa Kata Sandi'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Masukkan email Anda untuk menerima link reset kata sandi.'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                hintText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+      title: 'Lupa Kata Sandi',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Masukkan email Anda untuk menerima link reset kata sandi.',
+            style: TextStyle(color: Color(0xFF5A7561)),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (emailController.text.isNotEmpty) {
-                _showSuccessDialog(
-                  'Link Reset Dikirim',
-                  'Silakan cek email Anda untuk mereset kata sandi.',
-                );
-              }
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF2E7D32),
+          const SizedBox(height: 16),
+          TextField(
+            controller: emailController,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF1B3C21),
             ),
-            child: const Text('Kirim'),
+            decoration: InputDecoration(
+              labelText: 'Email',
+              labelStyle: const TextStyle(
+                color: Color(0xFF6B8B72),
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+              filled: true,
+              fillColor: const Color(0xFFF4F8F4),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            keyboardType: TextInputType.emailAddress,
           ),
         ],
       ),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF6B8B72),
+                  side: const BorderSide(color: Color(0xFFE0E0E0)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0D631B),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (emailController.text.isNotEmpty) {
+                    _showSuccessDialog(
+                      'Link Reset Dikirim',
+                      'Silakan cek email Anda untuk mereset kata sandi.',
+                    );
+                  }
+                },
+                child: const Text('Kirim', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
