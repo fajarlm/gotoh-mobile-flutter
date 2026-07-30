@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -34,16 +35,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       );
     } else {
       // Navigate to main app or login
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Onboarding completed!')),
+      CustomSnackBar.showSuccess(
+        context: context,
+        message: 'Onboarding completed!',
       );
     }
   }
 
   void _onSkip() {
     // Handle skip onboarding
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Onboarding skipped!')),
+    CustomSnackBar.showInfo(
+      context: context,
+      message: 'Onboarding skipped!',
     );
   }
 
