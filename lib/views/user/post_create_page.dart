@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fe_mobile/services/post_service.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class PostCreatePage extends StatefulWidget {
   const PostCreatePage({super.key});
@@ -36,9 +37,10 @@ class _PostCreatePageState extends State<PostCreatePage> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Gagal memilih gambar: $e')));
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Gagal memilih gambar: $e',
+      );
     }
   }
 
@@ -51,8 +53,9 @@ class _PostCreatePageState extends State<PostCreatePage> {
   Future<void> _submitPost() async {
     final content = _contentController.text.trim();
     if (content.isEmpty && _imageFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Konten atau gambar tidak boleh kosong')),
+      CustomSnackBar.showWarning(
+        context: context,
+        message: 'Konten atau gambar tidak boleh kosong',
       );
       return;
     }
@@ -73,15 +76,17 @@ class _PostCreatePageState extends State<PostCreatePage> {
 
     if (res['success'] == true) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Postingan berhasil dibuat!')),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Postingan berhasil dibuat!',
         );
         Navigator.pop(context, true); // Pop back and trigger refresh
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(res['message'] ?? 'Gagal membuat postingan')),
+        CustomSnackBar.showError(
+          context: context,
+          message: res['message'] ?? 'Gagal membuat postingan',
         );
       }
     }
