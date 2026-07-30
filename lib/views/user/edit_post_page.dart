@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fe_mobile/model/post_model.dart';
 import 'package:fe_mobile/services/post_service.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class EditPostPage extends StatefulWidget {
   final PostModel post;
@@ -159,15 +160,11 @@ class _EditPostPageState extends State<EditPostPage>
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   void _showSnack(String msg, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? _dangerColor : _primaryGreen,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
+    if (isError) {
+      CustomSnackBar.showError(context: context, message: msg);
+    } else {
+      CustomSnackBar.showSuccess(context: context, message: msg);
+    }
   }
 
   bool get _hasExistingImage =>
