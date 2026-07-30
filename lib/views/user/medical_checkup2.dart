@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 /// Step 2 of 6 – Kebiasaan Makan
 /// Dipanggil dari alur multi-step medical checkup.
@@ -39,12 +40,9 @@ class _MedicalCheckup2State extends State<MedicalCheckup2> {
 
   void _onNext() {
     if (_mealsPerDay == null || _fastFoodFreq == null || _sweetDrinks == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Harap jawab semua pertanyaan'),
-          backgroundColor: Color(0xFFBA1A1A),
-          behavior: SnackBarBehavior.floating,
-        ),
+      CustomSnackBar.showWarning(
+        context: context,
+        message: 'Harap jawab semua pertanyaan',
       );
       return;
     }
