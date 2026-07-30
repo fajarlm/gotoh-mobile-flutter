@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fe_mobile/model/community_model.dart';
 import 'package:fe_mobile/services/community_service.dart';
 import 'package:fe_mobile/views/user/chat_room.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 // Alias agar konsisten dengan routes / nama figma
 typedef DetailKomunitas = CommunityDetailPage;
@@ -74,51 +76,13 @@ class _CommunityDetailPageState extends State<CommunityDetailPage>
 
     if (_community.isMember) {
       // Confirm leaving
-      final confirm = await showDialog<bool>(
+      final confirm = await CustomDialog.showConfirm(
         context: context,
-        builder: (_) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          title: const Text(
-            'Keluar Komunitas',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: Color(0xFFBA1A1A),
-            ),
-          ),
-          content: Text(
-            'Yakin ingin keluar dari komunitas "${_community.name}"?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text(
-                'Batal',
-                style: TextStyle(
-                  color: Color(0xFF6B8B72),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFBA1A1A),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text(
-                'Keluar',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+        title: 'Keluar Komunitas',
+        message: 'Yakin ingin keluar dari komunitas "${_community.name}"?',
+        confirmLabel: 'Keluar',
+        cancelLabel: 'Batal',
+        isDestructive: true,
       );
       if (confirm != true) {
         setState(() {
@@ -128,36 +92,28 @@ class _CommunityDetailPageState extends State<CommunityDetailPage>
       }
       final success = await CommunityService.leaveCommunity(_community.id);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Anda telah keluar dari ${_community.name}'),
-            backgroundColor: const Color(0xFF0D631B),
-          ),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Anda telah keluar dari ${_community.name}',
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal keluar dari komunitas'),
-            backgroundColor: Color(0xFFBA1A1A),
-          ),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal keluar dari komunitas',
         );
       }
     } else {
       // Join
       final success = await CommunityService.joinCommunity(_community.id);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Selamat! Anda bergabung dengan ${_community.name}'),
-            backgroundColor: const Color(0xFF0D631B),
-          ),
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Selamat! Anda bergabung dengan ${_community.name}',
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Gagal bergabung dengan komunitas'),
-            backgroundColor: Color(0xFFBA1A1A),
-          ),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal bergabung dengan komunitas',
         );
       }
     }
