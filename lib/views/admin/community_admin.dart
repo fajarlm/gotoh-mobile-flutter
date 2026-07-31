@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fe_mobile/model/community_model.dart';
 import 'package:fe_mobile/services/community_service.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class CommunityManagementPage extends StatefulWidget {
   const CommunityManagementPage({super.key});
@@ -53,42 +55,31 @@ class _CommunityManagementPageState extends State<CommunityManagementPage> {
     _fetchCommunities();
   }
 
-  void _onDeleteCommunity(CommunityModel community) {
-    showDialog(
+  Future<void> _onDeleteCommunity(CommunityModel community) async {
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Hapus Komunitas'),
-        content: Text('Apakah Anda yakin ingin menghapus komunitas "${community.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              final success = await CommunityService.deleteCommunity(community.id);
-              if (success) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Komunitas "${community.name}" telah dihapus')),
-                  );
-                }
-                _fetchCommunities();
-              } else {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Gagal menghapus komunitas')),
-                  );
-                }
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
+      title: 'Hapus Komunitas',
+      message: 'Apakah Anda yakin ingin menghapus komunitas "${community.name}"?',
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+      isDestructive: true,
     );
+    if (confirm != true) return;
+
+    final success = await CommunityService.deleteCommunity(community.id);
+    if (!mounted) return;
+    if (success) {
+      CustomSnackBar.showSuccess(
+        context: context,
+        message: 'Komunitas "${community.name}" telah dihapus',
+      );
+      _fetchCommunities();
+    } else {
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Gagal menghapus komunitas',
+      );
+    }
   }
 
   @override
