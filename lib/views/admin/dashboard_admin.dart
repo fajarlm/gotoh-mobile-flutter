@@ -10,6 +10,8 @@ import 'package:open_file/open_file.dart';
 import 'package:fe_mobile/views/admin/user_admin.dart';
 import 'package:fe_mobile/views/admin/community_admin.dart';
 import 'package:fe_mobile/widget/custom_bottom_bar_admin.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 import 'package:fe_mobile/services/user_service.dart';
 import 'package:fe_mobile/services/community_service.dart';
 import 'package:fe_mobile/services/post_service.dart';
@@ -221,8 +223,9 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
       await OpenFile.open(file.path);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal mengekspor PDF: $e')),
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal mengekspor PDF: $e',
         );
       }
     } finally {
@@ -232,33 +235,22 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
     }
   }
 
-  void _handleLogout() {
-    showDialog(
+  Future<void> _handleLogout() async {
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Konfirmasi Keluar'),
-        content: const Text('Apakah Anda yakin ingin keluar dari portal Admin?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await AuthService.logout();
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AuthPage()),
-                );
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Keluar'),
-          ),
-        ],
-      ),
+      title: 'Konfirmasi Keluar',
+      message: 'Apakah Anda yakin ingin keluar dari portal Admin?',
+      confirmLabel: 'Keluar',
+      cancelLabel: 'Batal',
+      isDestructive: true,
+    );
+    if (confirm != true) return;
+
+    await AuthService.logout();
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthPage()),
     );
   }
 
