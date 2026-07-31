@@ -3,6 +3,8 @@ import 'package:fe_mobile/views/Auth/auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fe_mobile/model/user_model.dart';
 import 'package:fe_mobile/services/user_service.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -55,71 +57,49 @@ class _UserManagementPageState extends State<UserManagementPage> {
     _fetchUsers();
   }
 
-  void _onDeleteUser(UserModel user) {
-    showDialog(
+  Future<void> _onDeleteUser(UserModel user) async {
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Hapus User'),
-        content: Text('Apakah Anda yakin ingin menghapus "${user.username}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              final success = await UserService.deleteUser(user.id);
-              if (success) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${user.username} telah dihapus')),
-                  );
-                }
-                _fetchUsers();
-              } else {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Gagal menghapus user')),
-                  );
-                }
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
+      title: 'Hapus User',
+      message: 'Apakah Anda yakin ingin menghapus "${user.username}"?',
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+      isDestructive: true,
     );
+    if (confirm != true) return;
+
+    final success = await UserService.deleteUser(user.id);
+    if (!mounted) return;
+    if (success) {
+      CustomSnackBar.showSuccess(
+        context: context,
+        message: '${user.username} telah dihapus',
+      );
+      _fetchUsers();
+    } else {
+      CustomSnackBar.showError(
+        context: context,
+        message: 'Gagal menghapus user',
+      );
+    }
   }
 
-  void _handleLogout() {
-    showDialog(
+  Future<void> _handleLogout() async {
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Konfirmasi Keluar'),
-        content: const Text('Apakah Anda yakin ingin keluar dari portal Admin?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await AuthService.logout();
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AuthPage()),
-                );
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Keluar'),
-          ),
-        ],
-      ),
+      title: 'Konfirmasi Keluar',
+      message: 'Apakah Anda yakin ingin keluar dari portal Admin?',
+      confirmLabel: 'Keluar',
+      cancelLabel: 'Batal',
+      isDestructive: true,
+    );
+    if (confirm != true) return;
+
+    await AuthService.logout();
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthPage()),
     );
   }
 
