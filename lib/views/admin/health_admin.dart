@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fe_mobile/model/health_model.dart';
 import 'package:fe_mobile/services/health_service.dart';
+import 'package:fe_mobile/widget/custom_dialog.dart';
+import 'package:fe_mobile/widget/custom_snackbar.dart';
 
 class HealthAdmin extends StatefulWidget {
   const HealthAdmin({super.key});
@@ -58,44 +60,32 @@ class _HealthAdminState extends State<HealthAdmin> {
   }
 
   Future<void> _onDeleteCheckup(MedicalCheckupModel checkup) async {
-    final confirm = await showDialog<bool>(
+    final confirm = await CustomDialog.showConfirm(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Hapus Rekam Medis'),
-        content: Text(
+      title: 'Hapus Rekam Medis',
+      message:
           'Apakah Anda yakin ingin menghapus rekam medis user "${checkup.user?.username ?? 'User ID: ${checkup.userId}'}"?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Hapus',
+      cancelLabel: 'Batal',
+      isDestructive: true,
     );
 
     if (confirm == true) {
       setState(() => _isLoading = true);
       final success = await HealthService.deleteCheckup(checkup.id);
+      if (!mounted) return;
       if (success) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Rekam medis berhasil dihapus')),
-          );
-        }
+        CustomSnackBar.showSuccess(
+          context: context,
+          message: 'Rekam medis berhasil dihapus',
+        );
         _fetchCheckups();
       } else {
-        if (mounted) {
-          setState(() => _isLoading = false);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Gagal menghapus rekam medis')),
-          );
-        }
+        setState(() => _isLoading = false);
+        CustomSnackBar.showError(
+          context: context,
+          message: 'Gagal menghapus rekam medis',
+        );
       }
     }
   }
