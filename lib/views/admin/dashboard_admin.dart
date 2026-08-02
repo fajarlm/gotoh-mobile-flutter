@@ -309,7 +309,7 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00450D).withOpacity(0.2),
+                        color: const Color(0xFF00450D).withValues(alpha: 0.2),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       ),
@@ -325,7 +325,7 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
                       const SizedBox(height: 6),
                       Text(
                         'Selamat datang kembali di dashboard utama GOTOH. Pantau ekosistem secara real-time.',
-                        style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13, height: 1.4),
+                        style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13, height: 1.4),
                       ),
                     ],
                   ),
@@ -699,7 +699,7 @@ class _AdminDashboardContentViewState extends State<AdminDashboardContentView> {
         border: Border.all(color: const Color(0xFFE0E4DA)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
