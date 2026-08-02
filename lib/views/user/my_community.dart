@@ -547,7 +547,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(
@@ -580,7 +580,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.2),
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
                             foregroundColor: Colors.white,
                             elevation: 0,
                             padding: const EdgeInsets.symmetric(
@@ -627,7 +627,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     border: Border.all(color: const Color(0xFFE2EFE0)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
+                        color: Colors.black.withValues(alpha: 0.02),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -692,7 +692,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                                 decoration: BoxDecoration(
                                   color: const Color(
                                     0xFFC9E7CA,
-                                  ).withOpacity(0.3),
+                                  ).withValues(alpha: 0.3),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -747,7 +747,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -773,7 +773,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
