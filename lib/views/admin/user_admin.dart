@@ -142,7 +142,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     border: Border.all(color: const Color(0xFFC0C9BB)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
+                        color: Colors.black.withValues(alpha: 0.02),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -182,7 +182,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                               border: Border.all(color: const Color(0xFFE0E4DA)),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.03),
+                                  color: Colors.black.withValues(alpha: 0.03),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
