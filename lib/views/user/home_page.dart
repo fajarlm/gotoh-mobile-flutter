@@ -7,6 +7,7 @@ import 'package:fe_mobile/views/user/edit_post_page.dart';
 import 'package:fe_mobile/views/user/post_create_page.dart';
 import 'package:fe_mobile/views/user/post_detail_page.dart';
 import 'package:fe_mobile/views/user/profile_page.dart';
+import 'package:fe_mobile/views/user/challenges_page.dart';
 import 'package:fe_mobile/views/user/user_page.dart';
 import 'package:fe_mobile/widget/custom_dialog.dart';
 import 'package:fe_mobile/widget/custom_snackbar.dart';
@@ -269,11 +270,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Row(
               children: [
                 IconButton(
-                  onPressed: () {},
+                  tooltip: 'Tantangan & Edukasi',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ChallengesPage()),
+                    );
+                  },
                   icon: const Icon(
-                    Icons.notifications_none_rounded,
-                    color: _textMid,
-                    size: 26,
+                    Icons.emoji_events_outlined,
+                    color: _primaryGreen,
+                    size: 24,
                   ),
                   padding: EdgeInsets.zero,
                 ),

@@ -86,13 +86,20 @@ class HealthService {
   // ─── POST /exercise-recommendations ──────────────────────────────────────
   static Future<Map<String, dynamic>> createRecommendation({
     required String bmiCategory,
+    String? bloodPressure,
+    double? bloodSugar,
   }) async {
     try {
       final headers = await AuthService.authHeaders();
       final res = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/exercise-recommendations'),
         headers: headers,
-        body: jsonEncode({'bmi_category': bmiCategory}),
+        body: jsonEncode({
+          'bmi_category': bmiCategory,
+          if (bloodPressure != null && bloodPressure.isNotEmpty)
+            'blood_pressure': bloodPressure,
+          if (bloodSugar != null) 'blood_sugar': bloodSugar,
+        }),
       );
       if (res.statusCode == 201) {
         final body = jsonDecode(res.body);

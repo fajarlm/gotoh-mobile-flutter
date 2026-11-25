@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fe_mobile/services/auth_services.dart';
 import 'package:fe_mobile/services/user_service.dart';
 import 'package:fe_mobile/services/community_service.dart';
+import 'package:fe_mobile/services/extended_service.dart';
 import 'package:fe_mobile/model/user_model.dart';
 import 'package:fe_mobile/model/community_model.dart';
 import 'package:fe_mobile/views/Auth/auth_page.dart';
@@ -21,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   UserModel? _user;
   List<CommunityModel> _joinedCommunities = [];
+  Map<String, dynamic>? _healthSummary;
   bool _isLoading = true;
 
   @override
@@ -31,8 +33,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
-    await Future.wait([_loadProfile(), _loadCommunities()]);
+    await Future.wait([_loadProfile(), _loadCommunities(), _loadSummary()]);
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  Future<void> _loadSummary() async {
+    final sum = await WorkoutService.getSummary();
+    if (mounted && sum != null) setState(() => _healthSummary = sum);
   }
 
   Future<void> _loadProfile() async {
@@ -116,6 +123,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             _buildInfoCard(),
                             const SizedBox(height: 20),
                             _buildHealthTargetCard(),
+                            const SizedBox(height: 20),
+                            _buildBadgesSection(),
                             const SizedBox(height: 20),
                             _buildCommunitiesSection(),
                             const SizedBox(height: 36),
@@ -247,6 +256,114 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 36),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgesSection() {
+    final streak = _healthSummary?['streak'] ?? 0;
+    final badges = (_healthSummary?['badges'] as List?) ?? [];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3DDD0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Pencapaian & Streak',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF18181B),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF2F2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFFECACA)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.local_fire_department_rounded,
+                        size: 14, color: Color(0xFFB84A27)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$streak Hari',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB84A27),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (badges.isEmpty)
+            const Text(
+              'Catat checkup atau olahraga untuk membuka pencapaian.',
+              style: TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+            )
+          else
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: badges.map((b) {
+                final unlocked = b['unlocked'] == true;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: unlocked
+                        ? const Color(0xFFECFDF5)
+                        : const Color(0xFFF9FAFB),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: unlocked
+                          ? const Color(0xFFBBF7D0)
+                          : const Color(0xFFE5E7EB),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        unlocked ? Icons.check_circle_rounded : Icons.lock_outline,
+                        size: 14,
+                        color: unlocked
+                            ? const Color(0xFF166534)
+                            : const Color(0xFF9CA3AF),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        b['title'] ?? '',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: unlocked
+                              ? const Color(0xFF166534)
+                              : const Color(0xFF6B7280),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:fe_mobile/services/health_service.dart';
+import 'package:fe_mobile/services/extended_service.dart';
 import 'package:fe_mobile/model/health_model.dart';
 import 'package:fe_mobile/views/user/medical_checkup_form.dart';
 import 'package:fe_mobile/widget/custom_dialog.dart';
@@ -14,7 +16,10 @@ class HealthPage extends StatefulWidget {
 class _HealthPageState extends State<HealthPage> {
   bool _isLoading = true;
   MedicalCheckupModel? _latestCheckup;
+  List<MedicalCheckupModel> _allCheckups = [];
   List<ExerciseRecommendationModel> _recommendations = [];
+  List<Map<String, dynamic>> _workouts = [];
+  Map<String, dynamic>? _summary;
 
   @override
   void initState() {
@@ -28,12 +33,18 @@ class _HealthPageState extends State<HealthPage> {
     });
 
     try {
-      // 1. Dapatkan daftar checkup (terbaru pertama)
-      final checkups = await HealthService.getCheckups();
+      final results = await Future.wait([
+        HealthService.getCheckups(),
+        WorkoutService.getWorkouts(),
+        WorkoutService.getSummary(),
+      ]);
+      final checkups = results[0] as List<MedicalCheckupModel>;
+      _allCheckups = checkups;
+      _workouts = results[1] as List<Map<String, dynamic>>;
+      _summary = results[2] as Map<String, dynamic>?;
+
       if (checkups.isNotEmpty) {
         _latestCheckup = checkups.first;
-
-        // 2. Dapatkan rekomendasi latihan berdasarkan kategori BMI terbaru
         final category = _latestCheckup!.bmiCategory;
         final recs = await HealthService.getRecommendations(
           bmiCategory: category,
@@ -47,9 +58,11 @@ class _HealthPageState extends State<HealthPage> {
       print("Error loading health data: $e");
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _navigateToForm() async {
@@ -335,6 +348,12 @@ class _HealthPageState extends State<HealthPage> {
             ],
           ),
         ),
+        const SizedBox(height: 24),
+
+        // Trend Chart + Workout Log & Streak
+        _buildTrendChartCard(),
+        const SizedBox(height: 20),
+        _buildWorkoutLogCard(),
         const SizedBox(height: 24),
 
         // Physical details
@@ -639,6 +658,210 @@ class _HealthPageState extends State<HealthPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTrendChartCard() {
+    final bmiPoints = _allCheckups.reversed
+        .where((c) => c.bmi != null)
+        .toList();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3DDD0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Grafik Tren BMI',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF18181B),
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (bmiPoints.length < 2)
+            const Text(
+              'Catat minimal 2 medical checkup untuk melihat grafik perkembangan BMI.',
+              style: TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+            )
+          else
+            SizedBox(
+              height: 160,
+              child: LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: true, drawVerticalLine: false),
+                  titlesData: const FlTitlesData(
+                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      isCurved: true,
+                      color: const Color(0xFF085041),
+                      barWidth: 3,
+                      dotData: const FlDotData(show: true),
+                      spots: List.generate(
+                        bmiPoints.length,
+                        (i) => FlSpot(i.toDouble(), bmiPoints[i].bmi!),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWorkoutLogCard() {
+    final streak = _summary?['streak'] ?? 0;
+    final weeklyMin = _summary?['weekly_minutes'] ?? 0;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3DDD0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Aktivitas Olahraga',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF18181B),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Streak: $streak hari · $weeklyMin mnt minggu ini',
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+                  ),
+                ],
+              ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF085041),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                onPressed: _showAddWorkoutDialog,
+                icon: const Icon(Icons.add, size: 16, color: Colors.white),
+                label: const Text('Catat', style: TextStyle(fontSize: 12, color: Colors.white)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_workouts.isEmpty)
+            const Text(
+              'Belum ada catatan olahraga hari ini.',
+              style: TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+            )
+          else
+            Column(
+              children: _workouts.take(4).map((w) {
+                return ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.check_circle_outline, color: Color(0xFF085041), size: 20),
+                  title: Text(w['title'] ?? '', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  subtitle: Text(
+                    '${w['completed_date']} · ${w['category']} · ${w['duration_minutes']} mnt',
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline, size: 18, color: Colors.redAccent),
+                    onPressed: () async {
+                      await WorkoutService.deleteWorkout(w['id']);
+                      _loadHealthData();
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddWorkoutDialog() {
+    final titleCtrl = TextEditingController();
+    final minCtrl = TextEditingController(text: '30');
+    String category = 'cardio';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Catat Olahraga', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Aktivitas',
+                  hintText: 'Contoh: Jalan cepat pagi',
+                ),
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: category,
+                decoration: const InputDecoration(labelText: 'Kategori'),
+                items: const [
+                  DropdownMenuItem(value: 'cardio', child: Text('Kardio')),
+                  DropdownMenuItem(value: 'strength', child: Text('Latihan Kekuatan')),
+                  DropdownMenuItem(value: 'flexibility', child: Text('Peregangan / Yoga')),
+                  DropdownMenuItem(value: 'walking', child: Text('Jalan Kaki')),
+                ],
+                onChanged: (v) => setDialogState(() => category = v ?? 'cardio'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: minCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Durasi (menit)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF085041)),
+              onPressed: () async {
+                if (titleCtrl.text.trim().isEmpty) return;
+                Navigator.pop(ctx);
+                await WorkoutService.createWorkout(
+                  title: titleCtrl.text.trim(),
+                  category: category,
+                  durationMinutes: int.tryParse(minCtrl.text) ?? 30,
+                );
+                _loadHealthData();
+              },
+              child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
       ),
     );
   }
