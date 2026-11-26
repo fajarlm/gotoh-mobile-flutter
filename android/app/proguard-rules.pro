@@ -11,6 +11,9 @@
 -keep class androidx.lifecycle.** { *; }
 -keep class androidx.annotation.** { *; }
 
+# Ignore missing Play Core splitcompat classes when building standalone APK
+-dontwarn com.google.android.play.core.**
+
 # Prevent obfuscation of Service and Model serializable/JSON models if needed
 -keepclassmembers class * implements java.io.Serializable {
     static final long serialVersionUID;
